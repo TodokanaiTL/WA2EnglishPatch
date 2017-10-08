@@ -2,7 +2,7 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.3.0"
+#define AppVersion "0.8.3.1.3"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
@@ -18,9 +18,9 @@ AppPublisherURL = {#AppURL}
 AppSupportURL = {#AppURL}/contact
 AppUpdatesURL = {#AppURL}/patch
 DefaultGroupName = {#AppName}
-OutputBaseFilename = {#AppFileName}
+OutputBaseFilename = {#AppFileName}_nightly
 OutputDir = {#SourcePath}..\bin
-OutputManifestFile = ..\WA2_Patch_{#AppVersion}.manifest
+OutputManifestFile = ..\WA2_Patch_({#AppVersion}).manifest
 VersionInfoVersion = {#AppVersion}
 VersionInfoDescription = {#Appname} Patch
 InfoBeforeFile = {#SourcePath}Instructions.rtf
@@ -95,15 +95,12 @@ Source: "{tmp}\mv080.pak"; DestDir: "{app}\IC"; Components: subbedvideos\mv080; 
 Source: "{tmp}\mv090.pak"; DestDir: "{app}\IC"; Components: subbedvideos\mv090; Flags: external skipifsourcedoesntexist; ExternalSize: 230576128 
 
 [Code]
-
+#ifndef ERRC
+#define ERRC
 var
-  #ifndef ERRC
-  #define ERRC
   ErrorCounter: Integer;
-  #endif
-  DateTimeString: String;
-
-
+#endif
+  
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin       
   if CurPageID = wpReady then begin
@@ -154,5 +151,7 @@ begin
     IsFileDownloaded('mv090', '\IC\mv090'); 
   end;
   Log('Setup ended with ' + IntToStr(ErrorCounter) + ' error(s).');
-  FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + ChangeFileExt(ExtractFileName(ExpandConstant('{log}')), '.log'), false);
+  FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + \
+  ChangeFileExt(ExtractFileName(ExpandConstant('{log}')), '.log'), false);
+  RestartReplace(ExpandConstant('{log}'), '');
 end; 
