@@ -1,0 +1,11 @@
+*.exe
+*.dll
+*.ini
+*.tmp
+*.db
+*.lnk
+
+*.pak
+*.BKP
+*_BKP.*
+*.manifest
