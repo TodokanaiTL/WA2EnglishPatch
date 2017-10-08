@@ -9,3 +9,4 @@
 *.BKP
 *_BKP.*
 *.manifest
+!bin/*

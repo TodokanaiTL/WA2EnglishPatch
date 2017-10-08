@@ -1,11 +1,12 @@
 [Code]
-#ifndef ERRC
-#define ERRC
+#ifndef VARS
+#define VARS
 var
   ErrorCounter: Integer;
+  EV000_DL, EV150_DL: Boolean;
 #endif
 
-procedure DownloadFileCC(MVURL: String; MVName: String; MVSize: Integer);
+procedure DownloadVideoCC(MVURL: String; MVName: String; MVSize: Integer);
 begin
   if IsComponentSelected('subbedvideos\' + MVName) then begin
     Log(MVName + ' has been selected to download.');
@@ -19,14 +20,14 @@ begin
       end; 
       idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
     end else begin
-      Log('BKP file already exists. ' + MVName + ' will not be downloaded.');
+      Log('BKP file already exists. ' + MVName + '.pak will not be downloaded.');
     end;
   end else begin
-    Log(MVName + ' has not been selected to download.');
+    Log(MVName + '.pak has not been selected to download.');
   end;
 end;
 
-procedure DownloadFileIC(MVURL: String; MVName: String; MVSize: Integer);
+procedure DownloadVideoIC(MVURL: String; MVName: String; MVSize: Integer);
 begin
   if IsComponentSelected('subbedvideos\' + MVName) then begin
     Log(MVName + ' has been selected to download.');
@@ -40,21 +41,33 @@ begin
       end; 
       idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
     end else begin
-      Log('BKP file already exists. ' + MVName + ' will not be downloaded.');
+      Log('BKP file already exists. ' + MVName + '.pak will not be downloaded.');
     end;
   end else begin
-    Log(MVName + ' has not been selected to download.');
+    Log(MVName + '.pak has not been selected to download.');
+  end;
+end;
+
+procedure DownloadPatchFile(PFURL: String; PFName: String; PFSize: Integer);
+begin
+  if not FileExists(ExpandConstant('{app}\' + PFName + '.pak')) then begin
+    Log(PFName + '.pak does not already exist. Downloading.')
+    idpAddFileSize(PFURL, ExpandConstant('{tmp}\' + PFName + '.pak'), PFSize);
+    case (PFName) of
+      'ev000': EV000_DL := True;
+      'ev150': EV150_DL := True;
+    end;
+  end else begin
+    Log(PFName + '.pak already exists. It will not be downloaded.');
   end;
 end;
 
 procedure IsFileDownloaded(DLName: String; DLPath: String);
 begin
-  if IsComponentSelected('subbedvideos\' + DLName) then begin
-    if FileExists(ExpandConstant('{app}\' + DLPath + '.pak')) then begin
-      Log('Succesfully downloaded ' + DLName + '.');
-    end else begin
-      Log('Failed to download ' + DLName + '.');
-      ErrorCounter := ErrorCounter + 1;
-    end;
+  if FileExists(ExpandConstant('{app}\' + DLPath)) then begin
+    Log('Succesfully downloaded ' + DLName + '.pak.');
+  end else begin
+    Log('Failed to download ' + DLName + '.pak.');
+    ErrorCounter := ErrorCounter + 1;
   end;
 end;
