@@ -2,7 +2,7 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.3.5"
+#define AppVersion "0.8.3.7"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
@@ -29,14 +29,14 @@ InfoBeforeFile = {#SourcePath}Instructions.rtf
 InfoAfterFile = {#SourcePath}Release Notes.rtf
 SetupIconFile = {#SourcePath}logo.ico
 PrivilegesRequired = admin 
-;Compression = zip/9
-Compression = lzma2/ultra
-LZMAUseSeparateProcess = yes
-LZMADictionarySize = 524288  
-LZMANumFastBytes = 273
+Compression = zip/9
+;Compression = lzma2/ultra
+;LZMAUseSeparateProcess = yes
+;LZMADictionarySize = 524288  
+;LZMANumFastBytes = 273
 SolidCompression = yes
 DefaultDirName = {src}
-UsePreviousAppDir = yes
+;UsePreviousAppDir = yes
 AppendDefaultDirName = no
 TimeStampsInUTC = yes
 AllowCancelDuringInstall = yes
@@ -109,7 +109,11 @@ begin
     ErrorCounter := 0;
     Log('-- Initializing downloads --');
     Log('Downloading en.pak.');
-    idpAddFile('https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak?dl=1', 'en.pak');
+    try
+      idpAddFile('https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak?dl=1', ExpandConstant('{tmp}\en.pak'));
+    except
+      ShowExceptionMessage;
+    end;
 
     DownloadPatchFile('https://www.dropbox.com/s/kkw5xaxq177yu49/ev000.pak?dl=1', 'ev000',   2707456);
     DownloadPatchFile('https://www.dropbox.com/s/9mcw7evymo6sbx0/ev150.pak?dl=1', 'ev150', 114393088);
@@ -147,19 +151,35 @@ begin
   if IsComponentSelected('subbedvideos') then begin
       
     Log('-- Checking downloads --');     
-    if EV000_DL then IsFileDownloaded('ev000', 'ev000');
-    if EV150_DL then IsFileDownloaded('ev150', 'ev150');
+    if EV000_DL then IsFileDownloaded('ev000.pak', 'ev000.pak');
+    if EV150_DL then IsFileDownloaded('ev150.pak', 'ev150.pak');
 
-    if IsComponentSelected('{#SV}mv200') then IsFileDownloaded('mv200',     'mv200');
-    if IsComponentSelected('{#SV}mv010') then IsFileDownloaded('mv010', '\IC\mv010');
-    if IsComponentSelected('{#SV}mv020') then IsFileDownloaded('mv020', '\IC\mv020');
-    if IsComponentSelected('{#SV}mv070') then IsFileDownloaded('mv070', '\IC\mv070');
-    if IsComponentSelected('{#SV}mv080') then IsFileDownloaded('mv080', '\IC\mv080');
-    if IsComponentSelected('{#SV}mv090') then IsFileDownloaded('mv090', '\IC\mv090'); 
+    if IsComponentSelected('{#SV}mv200') then IsFileDownloaded('mv200.pak',     'mv200.pak');
+    if IsComponentSelected('{#SV}mv010') then IsFileDownloaded('mv010.pak', '\IC\mv010.pak');
+    if IsComponentSelected('{#SV}mv020') then IsFileDownloaded('mv020.pak', '\IC\mv020.pak');
+    if IsComponentSelected('{#SV}mv070') then IsFileDownloaded('mv070.pak', '\IC\mv070.pak');
+    if IsComponentSelected('{#SV}mv080') then IsFileDownloaded('mv080.pak', '\IC\mv080.pak');
+    if IsComponentSelected('{#SV}mv090') then IsFileDownloaded('mv090.pak', '\IC\mv090.pak'); 
   end;
-  Log('Setup ended with ' + IntToStr(ErrorCounter) + ' error(s).');
-  Log('MD5 hash of en.pak: ' + GetMD5OfFile(ExpandConstant('{app}\en.pak')));
-  FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + \
-  ChangeFileExt(ExtractFileName(ExpandConstant('{log}')), '.log'), false);
+  Log('Downloads ended with ' + IntToStr(ErrorCounter) + ' error(s).');
+
+  Log('-- MD5 hashes --');
+  LogMD5('en.pak', '');
+  LogMD5('WA2_en.exe', 'bf2b00da692bd99cdb88dbe7f19b54b2');
+  if EV000_DL then LogMD5('ev000.pak', '1a66cec0f63148a8baf0458e5c3d4675');
+  if EV150_DL then LogMD5('ev150.pak', 'de60616ee1641856070e454bea596d83');
+  if IsComponentSelected('{#SV}mv200') then  LogMD5('mv200.pak', '2f605315223d7691244189b94b2b13d3');
+  if IsComponentSelected('{#SV}mv010') then  LogMD5('\IC\mv010.pak', '797623b4fd9e1587a7757333f88e340c');
+  if IsComponentSelected('{#SV}mv020') then  LogMD5('\IC\mv020.pak', '2195ee1069d1bf2fc7f7fb59109386d8');
+  if IsComponentSelected('{#SV}mv070') then  LogMD5('\IC\mv070.pak', 'f6c477dfbe1767e0a70554cb40e1e27b');
+  if IsComponentSelected('{#SV}mv080') then  LogMD5('\IC\mv080.pak', '1890b98d6690f434ab8f7e3fdb37d998');
+  if IsComponentSelected('{#SV}mv090') then  LogMD5('\IC\mv090.pak', '2e397a50d035e263aa1360062114268a');
+
+  try
+    FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + \
+    ChangeFileExt(ExtractFileName(ExpandConstant('{log}')), '.log'), false);
+  except
+    ShowExceptionMessage;
+  end;
   RestartReplace(ExpandConstant('{log}'), '');
 end;

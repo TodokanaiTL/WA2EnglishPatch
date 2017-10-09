@@ -65,9 +65,24 @@ end;
 procedure IsFileDownloaded(DLName: String; DLPath: String);
 begin
   if FileExists(ExpandConstant('{app}\' + DLPath)) then begin
-    Log('Succesfully downloaded ' + DLName + '.pak.');
+    Log('Succesfully downloaded ' + DLName);
   end else begin
-    Log('Failed to download ' + DLName + '.pak.');
+    Log('Failed to download ' + DLName);
     ErrorCounter := ErrorCounter + 1;
+  end;
+end;
+
+procedure LogMD5(NameOfFile: String; MD5OfFile: String);
+begin
+  if FileExists(ExpandConstant('{app}\' + NameOfFile)) then begin
+    Log('MD5 hash of ' + NameOfFile + ': ' +  \
+    GetMD5OfFile(ExpandConstant('{app}\' + NameOfFile)) + '.')
+    if (NameOfFile = 'en.pak') then begin
+      Log('Verify with en.pak from https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak.');
+    end else begin
+      Log('Expected: ' + MD5OfFile + '.');
+    end;
+  end else begin
+    Log(NameOfFile + ' could not be found.');
   end;
 end;
