@@ -2,7 +2,7 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.3.7"
+#define AppVersion "0.8.3.7.2"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
@@ -96,15 +96,24 @@ Source: "{tmp}\mv080.pak"; DestDir: "{app}\IC"; Components: {#SV}mv080; Flags: {
 Source: "{tmp}\mv090.pak"; DestDir: "{app}\IC"; Components: {#SV}mv090; Flags: {#ExterFlags}; ExternalSize: 230576128 
 
 [Code]
+var
 #ifndef VARS
 #define VARS
-var
   ErrorCounter: Integer;
   EV000_DL, EV150_DL: Boolean;
 #endif
+  AppIsSet: Boolean;
+
+function InitializeSetup(): Boolean;
+begin
+  AppIsSet := False;
+  Result := True;
+end;
   
 function NextButtonClick(CurPageID: Integer): Boolean;
-begin       
+begin
+  if CurPageID = wpSelectDir then AppIsSet := True;
+
   if CurPageID = wpReady then begin
     ErrorCounter := 0;
     Log('-- Initializing downloads --');
@@ -148,33 +157,34 @@ end;
 
 procedure DeinitializeSetup();
 begin
-  if IsComponentSelected('subbedvideos') then begin
-      
-    Log('-- Checking downloads --');     
-    if EV000_DL then IsFileDownloaded('ev000.pak', 'ev000.pak');
-    if EV150_DL then IsFileDownloaded('ev150.pak', 'ev150.pak');
+  if AppIsSet then begin
+    if IsComponentSelected('subbedvideos') then begin
+      Log('-- Checking downloads --');     
+      if EV000_DL then IsFileDownloaded('ev000.pak', 'ev000.pak');
+      if EV150_DL then IsFileDownloaded('ev150.pak', 'ev150.pak');
 
-    if IsComponentSelected('{#SV}mv200') then IsFileDownloaded('mv200.pak',     'mv200.pak');
-    if IsComponentSelected('{#SV}mv010') then IsFileDownloaded('mv010.pak', '\IC\mv010.pak');
-    if IsComponentSelected('{#SV}mv020') then IsFileDownloaded('mv020.pak', '\IC\mv020.pak');
-    if IsComponentSelected('{#SV}mv070') then IsFileDownloaded('mv070.pak', '\IC\mv070.pak');
-    if IsComponentSelected('{#SV}mv080') then IsFileDownloaded('mv080.pak', '\IC\mv080.pak');
-    if IsComponentSelected('{#SV}mv090') then IsFileDownloaded('mv090.pak', '\IC\mv090.pak'); 
+      if IsComponentSelected('{#SV}mv200') then IsFileDownloaded('mv200.pak',     'mv200.pak');
+      if IsComponentSelected('{#SV}mv010') then IsFileDownloaded('mv010.pak', '\IC\mv010.pak');
+      if IsComponentSelected('{#SV}mv020') then IsFileDownloaded('mv020.pak', '\IC\mv020.pak');
+      if IsComponentSelected('{#SV}mv070') then IsFileDownloaded('mv070.pak', '\IC\mv070.pak');
+      if IsComponentSelected('{#SV}mv080') then IsFileDownloaded('mv080.pak', '\IC\mv080.pak');
+      if IsComponentSelected('{#SV}mv090') then IsFileDownloaded('mv090.pak', '\IC\mv090.pak'); 
+    end;
+    Log('Downloads ended with ' + IntToStr(ErrorCounter) + ' error(s).');
+
+    Log('-- MD5 hashes --');
+    LogMD5('en.pak', '');
+    LogMD5('WA2_en.exe', 'bf2b00da692bd99cdb88dbe7f19b54b2');
+    if EV000_DL then LogMD5('ev000.pak', '1a66cec0f63148a8baf0458e5c3d4675');
+    if EV150_DL then LogMD5('ev150.pak', 'de60616ee1641856070e454bea596d83');
+
+    if IsComponentSelected('{#SV}mv200') then  LogMD5('mv200.pak', '2f605315223d7691244189b94b2b13d3');
+    if IsComponentSelected('{#SV}mv010') then  LogMD5('\IC\mv010.pak', '797623b4fd9e1587a7757333f88e340c');
+    if IsComponentSelected('{#SV}mv020') then  LogMD5('\IC\mv020.pak', '2195ee1069d1bf2fc7f7fb59109386d8');
+    if IsComponentSelected('{#SV}mv070') then  LogMD5('\IC\mv070.pak', 'f6c477dfbe1767e0a70554cb40e1e27b');
+    if IsComponentSelected('{#SV}mv080') then  LogMD5('\IC\mv080.pak', '1890b98d6690f434ab8f7e3fdb37d998');
+    if IsComponentSelected('{#SV}mv090') then  LogMD5('\IC\mv090.pak', '2e397a50d035e263aa1360062114268a');
   end;
-  Log('Downloads ended with ' + IntToStr(ErrorCounter) + ' error(s).');
-
-  Log('-- MD5 hashes --');
-  LogMD5('en.pak', '');
-  LogMD5('WA2_en.exe', 'bf2b00da692bd99cdb88dbe7f19b54b2');
-  if EV000_DL then LogMD5('ev000.pak', '1a66cec0f63148a8baf0458e5c3d4675');
-  if EV150_DL then LogMD5('ev150.pak', 'de60616ee1641856070e454bea596d83');
-  if IsComponentSelected('{#SV}mv200') then  LogMD5('mv200.pak', '2f605315223d7691244189b94b2b13d3');
-  if IsComponentSelected('{#SV}mv010') then  LogMD5('\IC\mv010.pak', '797623b4fd9e1587a7757333f88e340c');
-  if IsComponentSelected('{#SV}mv020') then  LogMD5('\IC\mv020.pak', '2195ee1069d1bf2fc7f7fb59109386d8');
-  if IsComponentSelected('{#SV}mv070') then  LogMD5('\IC\mv070.pak', 'f6c477dfbe1767e0a70554cb40e1e27b');
-  if IsComponentSelected('{#SV}mv080') then  LogMD5('\IC\mv080.pak', '1890b98d6690f434ab8f7e3fdb37d998');
-  if IsComponentSelected('{#SV}mv090') then  LogMD5('\IC\mv090.pak', '2e397a50d035e263aa1360062114268a');
-
   try
     FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + \
     ChangeFileExt(ExtractFileName(ExpandConstant('{log}')), '.log'), false);
