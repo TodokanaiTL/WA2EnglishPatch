@@ -2,7 +2,7 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.3.7.2"
+#define AppVersion "0.8.4.1"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
@@ -20,20 +20,18 @@ AppPublisherURL = {#AppURL}
 AppSupportURL = {#AppURL}/contact
 AppUpdatesURL = {#AppURL}/patch
 DefaultGroupName = {#AppName}
-OutputBaseFilename = {#AppFileName}_nightly
+OutputBaseFilename = {#AppFileName}
 OutputDir = {#SourcePath}..\out
-;OutputManifestFile = WA2_Patch_({#AppVersion}).manifest
 VersionInfoVersion = {#AppVersion}
 VersionInfoDescription = {#Appname} Patch
 InfoBeforeFile = {#SourcePath}Instructions.rtf
 InfoAfterFile = {#SourcePath}Release Notes.rtf
 SetupIconFile = {#SourcePath}logo.ico
 PrivilegesRequired = admin 
-Compression = zip/9
-;Compression = lzma2/ultra
-;LZMAUseSeparateProcess = yes
-;LZMADictionarySize = 524288  
-;LZMANumFastBytes = 273
+Compression = lzma2/ultra
+LZMAUseSeparateProcess = yes
+LZMADictionarySize = 524288  
+LZMANumFastBytes = 273
 SolidCompression = yes
 DefaultDirName = {src}
 ;UsePreviousAppDir = yes
@@ -99,30 +97,34 @@ Source: "{tmp}\mv090.pak"; DestDir: "{app}\IC"; Components: {#SV}mv090; Flags: {
 var
 #ifndef VARS
 #define VARS
-  ErrorCounter: Integer;
-  EV000_DL, EV150_DL: Boolean;
+  errorCounter: Integer;
+  ev000_DL, ev150_DL: Boolean;
 #endif
-  AppIsSet: Boolean;
+  appIsSet: Boolean;
 
 function InitializeSetup(): Boolean;
 begin
-  AppIsSet := False;
+  try
+    appIsSet := False;
+  except
+    ShowExceptionMessage;
+  end;
+  try
+    errorCounter := 0;
+  except
+    ShowExceptionMessage;
+  end;
   Result := True;
 end;
   
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
-  if CurPageID = wpSelectDir then AppIsSet := True;
+  if CurPageID = wpSelectDir then appIsSet := True;
 
   if CurPageID = wpReady then begin
-    ErrorCounter := 0;
     Log('-- Initializing downloads --');
     Log('Downloading en.pak.');
-    try
-      idpAddFile('https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak?dl=1', ExpandConstant('{tmp}\en.pak'));
-    except
-      ShowExceptionMessage;
-    end;
+    idpAddFile('https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak?dl=1', ExpandConstant('{tmp}\en.pak'));
 
     DownloadPatchFile('https://www.dropbox.com/s/kkw5xaxq177yu49/ev000.pak?dl=1', 'ev000',   2707456);
     DownloadPatchFile('https://www.dropbox.com/s/9mcw7evymo6sbx0/ev150.pak?dl=1', 'ev150', 114393088);
@@ -157,11 +159,11 @@ end;
 
 procedure DeinitializeSetup();
 begin
-  if AppIsSet then begin
+  if appIsSet then begin
     if IsComponentSelected('subbedvideos') then begin
       Log('-- Checking downloads --');     
-      if EV000_DL then IsFileDownloaded('ev000.pak', 'ev000.pak');
-      if EV150_DL then IsFileDownloaded('ev150.pak', 'ev150.pak');
+      if ev000_DL then IsFileDownloaded('ev000.pak', 'ev000.pak');
+      if ev150_DL then IsFileDownloaded('ev150.pak', 'ev150.pak');
 
       if IsComponentSelected('{#SV}mv200') then IsFileDownloaded('mv200.pak',     'mv200.pak');
       if IsComponentSelected('{#SV}mv010') then IsFileDownloaded('mv010.pak', '\IC\mv010.pak');
@@ -170,13 +172,13 @@ begin
       if IsComponentSelected('{#SV}mv080') then IsFileDownloaded('mv080.pak', '\IC\mv080.pak');
       if IsComponentSelected('{#SV}mv090') then IsFileDownloaded('mv090.pak', '\IC\mv090.pak'); 
     end;
-    Log('Downloads ended with ' + IntToStr(ErrorCounter) + ' error(s).');
+    Log('Downloads ended with ' + IntToStr(errorCounter) + ' error(s).');
 
     Log('-- MD5 hashes --');
     LogMD5('en.pak', '');
-    LogMD5('WA2_en.exe', 'bf2b00da692bd99cdb88dbe7f19b54b2');
-    if EV000_DL then LogMD5('ev000.pak', '1a66cec0f63148a8baf0458e5c3d4675');
-    if EV150_DL then LogMD5('ev150.pak', 'de60616ee1641856070e454bea596d83');
+    LogMD5('WA2_en.exe', '34a2e8b839b6d19c6efb0488a527a7d4');
+    if ev000_DL then LogMD5('ev000.pak', '1a66cec0f63148a8baf0458e5c3d4675');
+    if ev150_DL then LogMD5('ev150.pak', 'de60616ee1641856070e454bea596d83');
 
     if IsComponentSelected('{#SV}mv200') then  LogMD5('mv200.pak', '2f605315223d7691244189b94b2b13d3');
     if IsComponentSelected('{#SV}mv010') then  LogMD5('\IC\mv010.pak', '797623b4fd9e1587a7757333f88e340c');
