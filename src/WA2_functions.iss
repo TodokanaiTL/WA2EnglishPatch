@@ -65,9 +65,9 @@ end;
 procedure IsFileDownloaded(DLName: String; DLPath: String);
 begin
   if FileExists(ExpandConstant('{app}\' + DLPath)) then begin
-    Log('Succesfully downloaded ' + DLName);
+    Log('Succesfully downloaded ' + AddPeriod(DLName));
   end else begin
-    Log('Failed to download ' + DLName);
+    Log('Failed to download ' + AddPeriod(DLName));
     errorCounter := errorCounter + 1;
   end;
 end;
@@ -82,7 +82,7 @@ begin
     except
        MsgBox('Exception raised: ' + AddPeriod(GetExceptionMessage), mbError, MB_OK);
     end;
-    Log('MD5 hash of ' + NameOfFile + ': ' + MD5OfFile + '.')
+    Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(MD5OfFile))
     if (NameOfFile = 'en.pak') then begin
       Log('Verify with en.pak from https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak.');
     end else begin
