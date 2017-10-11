@@ -16,7 +16,7 @@ begin
         Log('Succesfully created BKP file.');
       end else begin
         Log('Failed to create BKP file.');
-        errorCounter := errorCounter + 1;
+        errorCounter := {#increment};
       end; 
       idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
     end else begin
@@ -37,7 +37,7 @@ begin
         Log('Succesfully created BKP file.');
       end else begin
         Log('Failed to create BKP file.');
-        errorCounter := errorCounter + 1;
+        errorCounter := {#increment};
       end; 
       idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
     end else begin
@@ -68,7 +68,7 @@ begin
     Log('Succesfully downloaded ' + AddPeriod(DLName));
   end else begin
     Log('Failed to download ' + AddPeriod(DLName));
-    errorCounter := errorCounter + 1;
+    errorCounter := {#increment};
   end;
 end;
 

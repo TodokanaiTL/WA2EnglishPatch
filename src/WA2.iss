@@ -8,7 +8,8 @@
 #define AppExeName "WA2_en.exe"
 #define AppFileName "WA2_patch"
 #define ExterFlags "external skipifsourcedoesntexist"
-#define SV "subbedvideos\" 
+#define SV "subbedvideos\"
+#define increment __COUNTER__ 
 
 [Setup]
 AppId = {{89357994-3C15-4411-894D-A23CE3FF1AA1}
@@ -110,7 +111,7 @@ begin
     ShowExceptionMessage;
   end;
   try
-    errorCounter := 0;
+    errorCounter := {#increment};
   except
     ShowExceptionMessage;
   end;
