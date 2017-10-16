@@ -1,6 +1,6 @@
 [Code]
-#ifndef VARS
-#define VARS
+#ifndef _VAR_
+#define _VAR_
 var
   errorCounter: Integer;
   ev000_DL, eV150_DL: Boolean;
@@ -11,16 +11,15 @@ begin
   if IsComponentSelected('subbedvideos\' + MVName) then begin
     Log(MVName + ' has been selected to download.');
     if not FileExists(ExpandConstant('{app}\' + MVName + '.pak.BKP')) then begin
-      Log('BKP file does not already exist.');
       if RenameFile(ExpandConstant('{app}\' + MVName + '.pak'), ExpandConstant('{app}\' + MVName + '.pak.BKP')) then begin
         Log('Succesfully created BKP file.');
       end else begin
         Log('Failed to create BKP file.');
-        errorCounter := {#increment};
+        errorCounter := errorCounter + 1;
       end; 
       idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
     end else begin
-      Log('BKP file already exists. ' + MVName + '.pak will not be downloaded.');
+      Log(MVName + '.pak is already downloaded.');
     end;
   end else begin
     Log(MVName + '.pak has not been selected to download.');
@@ -32,16 +31,15 @@ begin
   if IsComponentSelected('subbedvideos\' + MVName) then begin
     Log(MVName + ' has been selected to download.');
     if not FileExists(ExpandConstant('{app}\IC\' + MVName + '.pak.BKP')) then begin
-      Log('BKP file does not already exist.');
       if RenameFile(ExpandConstant('{app}\IC\' + MVName + '.pak'), ExpandConstant('{app}\IC\' + MVName + '.pak.BKP')) then begin
         Log('Succesfully created BKP file.');
       end else begin
         Log('Failed to create BKP file.');
-        errorCounter := {#increment};
+        errorCounter := errorCounter + 1;
       end; 
       idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
     end else begin
-      Log('BKP file already exists. ' + MVName + '.pak will not be downloaded.');
+      Log(MVName + '.pak is already downloaded.');
     end;
   end else begin
     Log(MVName + '.pak has not been selected to download.');
@@ -68,11 +66,11 @@ begin
     Log('Succesfully downloaded ' + AddPeriod(DLName));
   end else begin
     Log('Failed to download ' + AddPeriod(DLName));
-    errorCounter := {#increment};
+    errorCounter := errorCounter + 1;
   end;
 end;
 
-procedure LogMD5(NameOfFile: String; ExpectedMD5: String);
+procedure LogMD5CC(NameOfFile: String; ExpectedMD5: String);
 var
   MD5OfFile: String;
 begin
@@ -82,11 +80,36 @@ begin
     except
        MsgBox('Exception raised: ' + AddPeriod(GetExceptionMessage), mbError, MB_OK);
     end;
-    Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(MD5OfFile))
+    Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(AnsiUppercase(MD5OfFile)))
     if (NameOfFile = 'en.pak') then begin
-      Log('Verify with en.pak from https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak.');
+      Log('Hash cannot be verified automatically.');
     end else begin
-      Log('Expected: ' + AddPeriod(ExpectedMD5));
+      if (CompareText(MD5OfFile, ExpectedMD5) = 0) then begin
+        Log('File hash matches expected hash.');
+      end else begin 
+        Log('Expected: ' + AddPeriod(AnsiUppercase(ExpectedMD5)));
+      end;
+    end;
+  end else begin
+    Log(NameOfFile + ' could not be found.');
+  end;
+end;
+
+procedure LogMD5IC(NameOfFile: String; ExpectedMD5: String);
+var
+  MD5OfFile: String;
+begin
+  if FileExists(ExpandConstant('{app}\IC\' + NameOfFile)) then begin
+    try
+      MD5OfFile := GetMD5OfFile(ExpandConstant('{app}\IC\' + NameOfFile));
+    except
+       MsgBox('Exception raised: ' + AddPeriod(GetExceptionMessage), mbError, MB_OK);
+    end;
+    Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(AnsiUppercase(MD5OfFile)))
+    if (CompareText(MD5OfFile, ExpectedMD5) = 0) then begin
+      Log('File hash matches expected hash.');
+    end else begin 
+      Log('Expected: ' + AddPeriod(AnsiUppercase(ExpectedMD5)));
     end;
   end else begin
     Log(NameOfFile + ' could not be found.');
