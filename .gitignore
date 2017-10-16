@@ -4,7 +4,9 @@
 *.tmp
 *.db
 *.lnk
+*.sh
 *.pak
 *.BKP
+*_BKP.*
 *.manifest
 !bin/*
