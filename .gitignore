@@ -7,6 +7,6 @@
 
 *.pak
 *.BKP
-*_BKP.*
 *.manifest
+
 !bin/*
