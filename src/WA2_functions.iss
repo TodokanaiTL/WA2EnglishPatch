@@ -1,6 +1,6 @@
 [Code]
-#ifndef _VAR_
-#define _VAR_
+#ifndef _DL_
+#define _DL_
 var
   ev000_DL, eV150_DL: Boolean;
 #endif
@@ -8,7 +8,7 @@ var
 procedure DownloadVideoCC(MVURL: String; MVName: String; MVSize: Integer);
 begin
   if IsComponentSelected('subbedvideos\' + MVName) then begin
-    Log(MVName + ' has been selected to download.');
+    Log(MVName + ' has been selected.');
     if not FileExists(ExpandConstant('{app}\' + MVName + '.pak.BKP')) then begin
       if RenameFile(ExpandConstant('{app}\' + MVName + '.pak'), ExpandConstant('{app}\' + MVName + '.pak.BKP')) then begin
         Log('Succesfully created BKP file.');
@@ -22,14 +22,14 @@ begin
       Log(MVName + '.pak already exists.');
     end;
   end else begin
-    Log(MVName + '.pak has not been selected to download.');
+    Log(MVName + '.pak hasn''t been selected.');
   end;
 end;
 
 procedure DownloadVideoIC(MVURL: String; MVName: String; MVSize: Integer);
 begin
   if IsComponentSelected('subbedvideos\' + MVName) then begin
-    Log(MVName + ' has been selected to download.');
+    Log(MVName + ' has been selected.');
     if not FileExists(ExpandConstant('{app}\IC\' + MVName + '.pak.BKP')) then begin
       if RenameFile(ExpandConstant('{app}\IC\' + MVName + '.pak'), ExpandConstant('{app}\IC\' + MVName + '.pak.BKP')) then begin
         Log('Succesfully created BKP file.');
@@ -43,7 +43,7 @@ begin
       Log(MVName + '.pak already exists.');
     end;
   end else begin
-    Log(MVName + '.pak has not been selected to download.');
+    Log(MVName + '.pak hasn''t been selected.');
   end;
 end;
 
@@ -114,4 +114,9 @@ begin
   end else begin
     Log('Error. ' + NameOfFile + ' could not be found.');
   end;
+end;
+
+function CurDateTime:String;
+begin
+  Result := GetDateTimeString ('yyyy-mm-dd_hh.nn.ss', '-', '.');
 end;

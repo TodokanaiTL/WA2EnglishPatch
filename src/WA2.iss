@@ -2,13 +2,14 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.4.2"
+#define AppVersion "0.8.4.3"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
 #define AppFileName "WA2_patch"
 #define ExterFlags "external skipifsourcedoesntexist"
 #define SubV "subbedvideos\"
+
 
 [Setup]
 AppId = {{89357994-3C15-4411-894D-A23CE3FF1AA1}
@@ -34,7 +35,7 @@ LZMADictionarySize = 524288
 LZMANumFastBytes = 273
 SolidCompression = yes
 DefaultDirName = {src}
-UsePreviousAppDir = yes
+;UsePreviousAppDir = yes
 AppendDefaultDirName = no
 TimeStampsInUTC = yes
 AllowCancelDuringInstall = yes
@@ -70,7 +71,7 @@ Name: "desktopicon";  Description: "Desktop shortcut"; Types: full
 
 [Dirs]
 Name: "{app}\IC"; Components: subbedvideos
-Name: "{userdocs}\White Album 2 Patch Logs"; 
+Name: "{userdocs}\White Album 2 Patch Logs" 
 
 [Icons]
 Name: "{commondesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Components: desktopicon
@@ -95,16 +96,30 @@ Source: "{tmp}\mv090.pak"; DestDir: "{app}\IC"; Components: {#SubV}mv090; Flags:
 
 [Code]
 var
+  DateAndTime: String;
   appIsSet: Boolean;
-#ifndef _VAR_
-#define _VAR_
+  wasCancelled: Boolean;
+#ifndef _DL_
+#define _DL_
   ev000_DL, ev150_DL: Boolean;
 #endif
 
 function InitializeSetup(): Boolean;
 begin
   try
+    DateAndTime := CurDateTime();
+  except
+    ShowExceptionMessage;
+  end;
+  
+  try
     appIsSet := False;
+  except
+    ShowExceptionMessage;
+  end;
+  
+  try
+    wasCancelled := False;
   except
     ShowExceptionMessage;
   end;
@@ -144,17 +159,28 @@ begin
 		
       {* mv090 *}
       DownloadVideoIC('https://www.dropbox.com/s/012laiv3ycm2quk/ev090.pak?dl=1', 'mv090', 230576128);
+    end else begin
+      Log('No subbed videos have been selected.');
     end;
     idpDownloadAfter(wpReady);
-    Log('Downloading ' + IntToStr(idpFilesCount) + ' file(s).');
+    Log('Downloading ' + IntToStr(idpFilesCount) + ' file(s).'); 
   end;
 	
   Result := True;
 end;
 
+procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
+begin
+  try
+    wasCancelled := True;
+  except
+    ShowExceptionMessage();
+  end;
+end;
+
 procedure DeinitializeSetup();
 begin
-  if appIsSet then begin
+  if appIsSet and not wasCancelled then begin
     Log('-- Checking downloads --')
     IsFileDownloaded('en.pak', 'en.pak');
     if ev000_DL then IsFileDownloaded('ev000.pak', 'ev000.pak');
@@ -167,8 +193,7 @@ begin
     if IsComponentSelected('{#SubV}mv090') then IsFileDownloaded('mv090.pak', '\IC\mv090.pak'); 
 
     Log('-- Checking MD5 hashes --');
-    LogMD5CC('en.pak', '');
-    LogMD5CC('WA2_en.exe', '86b532cefaeac9026d0f5b9cd3ee1ee0');
+    LogMD5CC('en.pak', '');    LogMD5CC('WA2_en.exe', '86b532cefaeac9026d0f5b9cd3ee1ee0');
     if ev000_DL then LogMD5CC('ev000.pak', '1a66cec0f63148a8baf0458e5c3d4675');
     if ev150_DL then LogMD5CC('ev150.pak', 'de60616ee1641856070e454bea596d83');
     if IsComponentSelected('{#SubV}mv200') then  LogMD5CC('mv200.pak', '2f605315223d7691244189b94b2b13d3');
@@ -179,11 +204,6 @@ begin
     if IsComponentSelected('{#SubV}mv090') then  LogMD5IC('mv090.pak', '2e397a50d035e263aa1360062114268a');
   end;
 
-  try
-    FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + \
-    ChangeFileExt(ExtractFileName(ExpandConstant('{log}')), '.log'), false);
-  except
-    ShowExceptionMessage;
-  end;
+  FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + 'WA2_Patch_Log_' + DateAndTime + '.log', False);
   RestartReplace(ExpandConstant('{log}'), '');
 end;
