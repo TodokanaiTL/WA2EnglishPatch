@@ -10,7 +10,6 @@
 #define ExterFlags "external skipifsourcedoesntexist"
 #define SubV "subbedvideos\"
 
-
 [Setup]
 AppId = {{89357994-3C15-4411-894D-A23CE3FF1AA1}
 AppName = {#AppName}
@@ -59,7 +58,8 @@ Type: files; Name: "{app}\IC\ev080.pak"
 Type: files; Name: "{app}\IC\ev090.pak"
 
 [Components]
-Name: "patch";        Description: "English patch";    Types: full custom compact; Flags: fixed
+Name: "patch";        Description: "English patch";    Types: full compact custom; Flags: fixed
+Name: "desktopicon";  Description: "Desktop shortcut"; Types: full compact
 Name: "subbedvideos"; Description: "Subbed videos";    Types: full
 Name: "{#SubV}mv200"; Description: "mv200";            Types: full 
 Name: "{#SubV}mv010"; Description: "mv010";            Types: full
@@ -67,7 +67,7 @@ Name: "{#SubV}mv020"; Description: "mv020";            Types: full
 Name: "{#SubV}mv070"; Description: "mv070";            Types: full
 Name: "{#SubV}mv080"; Description: "mv080";            Types: full
 Name: "{#SubV}mv090"; Description: "mv090";            Types: full
-Name: "desktopicon";  Description: "Desktop shortcut"; Types: full
+
 
 [Dirs]
 Name: "{app}\IC"; Components: subbedvideos
@@ -80,9 +80,9 @@ Name: "{commondesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Components:
 Source: "{#SourcePath}..\bin\WA2_en.exe"; DestDir: "{app}"; Components: patch
 
 ;Patch Files
-Source: "{tmp}\en.pak";    DestDir: "{app}"; Components: patch; Flags: ignoreversion     {#ExterFlags};
-Source: "{tmp}\ev000.pak"; DestDir: "{app}"; Components: patch; Flags: onlyifdoesntexist {#ExterFlags}; ExternalSize:    2707456
-Source: "{tmp}\ev150.pak"; DestDir: "{app}"; Components: patch; Flags: onlyifdoesntexist {#ExterFlags}; ExternalSize:  114393088
+Source: "{tmp}\en.pak";    DestDir: "{app}"; Components: patch; Flags: {#ExterFlags} ignoreversion;
+Source: "{tmp}\ev000.pak"; DestDir: "{app}"; Components: patch; Flags: {#ExterFlags}; ExternalSize:    2707456
+Source: "{tmp}\ev150.pak"; DestDir: "{app}"; Components: patch; Flags: {#ExterFlags}; ExternalSize:  114393088
 
 ;Videos CC
 Source: "{tmp}\mv200.pak"; DestDir: "{app}";    Components: {#SubV}mv200; Flags: {#ExterFlags}; ExternalSize: 189390848 
@@ -122,6 +122,12 @@ begin
     wasCancelled := False;
   except
     ShowExceptionMessage;
+  end;
+
+  if not  RegKeyExists(GetHKLM, 'Software\Leaf\WHITE ALBUM2') \
+  and not RegKeyExists(HKCU, 'Software\Leaf\WHITE ALBUM2') then begin
+    MsgBox('You have to install the original game before applying the patch.', mbError, MB_OK);
+    Result := False;
   end;
 
   Result := True;
@@ -202,7 +208,10 @@ begin
     if IsComponentSelected('{#SubV}mv070') then  LogMD5IC('mv070.pak', 'f6c477dfbe1767e0a70554cb40e1e27b');
     if IsComponentSelected('{#SubV}mv080') then  LogMD5IC('mv080.pak', '1890b98d6690f434ab8f7e3fdb37d998');
     if IsComponentSelected('{#SubV}mv090') then  LogMD5IC('mv090.pak', '2e397a50d035e263aa1360062114268a');
+    
+    Log('Setup completed.');
   end;
+
 
   FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + 'WA2_Patch_Log_' + DateAndTime + '.log', False);
   RestartReplace(ExpandConstant('{log}'), '');
