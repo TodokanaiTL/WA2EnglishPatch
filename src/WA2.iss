@@ -2,7 +2,7 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.4.3"
+#define AppVersion "0.8.4.4"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
@@ -34,7 +34,7 @@ LZMADictionarySize = 524288
 LZMANumFastBytes = 273
 SolidCompression = yes
 DefaultDirName = {src}
-;UsePreviousAppDir = yes
+UsePreviousAppDir = yes
 AppendDefaultDirName = no
 TimeStampsInUTC = yes
 AllowCancelDuringInstall = yes
