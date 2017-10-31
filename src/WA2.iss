@@ -2,7 +2,7 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.4.3"
+#define AppVersion "0.8.4.5"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
@@ -24,9 +24,9 @@ OutputBaseFilename = {#AppFileName}
 OutputDir = {#SourcePath}..\out
 VersionInfoVersion = {#AppVersion}
 VersionInfoDescription = {#Appname} Patch
-InfoBeforeFile = {#SourcePath}Instructions.rtf
-InfoAfterFile = {#SourcePath}Release Notes.rtf
-SetupIconFile = {#SourcePath}logo.ico
+InfoBeforeFile = {#SourcePath}..\docs\Instructions.rtf
+InfoAfterFile = {#SourcePath}..\docs\Release Notes.rtf
+SetupIconFile = {#SourcePath}..\icons\logo.ico
 PrivilegesRequired = admin 
 Compression = lzma2/ultra
 LZMAUseSeparateProcess = yes
@@ -211,7 +211,6 @@ begin
     
     Log('Setup completed.');
   end;
-
 
   FileCopy(ExpandConstant('{log}'), ExpandConstant('{userdocs}\White Album 2 Patch Logs\') + 'WA2_Patch_Log_' + DateAndTime + '.log', False);
   RestartReplace(ExpandConstant('{log}'), '');
