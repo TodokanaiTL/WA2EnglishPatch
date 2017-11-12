@@ -2,7 +2,7 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.4.5"
+#define AppVersion "0.8.4.6"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
@@ -81,7 +81,7 @@ Source: "{#SourcePath}..\bin\WA2_en.exe"; DestDir: "{app}"; Components: patch
 
 ;Patch Files
 Source: "{tmp}\en.pak";    DestDir: "{app}"; Components: patch; Flags: {#ExterFlags} ignoreversion;
-Source: "{tmp}\ev000.pak"; DestDir: "{app}"; Components: patch; Flags: {#ExterFlags}; ExternalSize:    2707456
+Source: "{tmp}\ev000.pak"; DestDir: "{app}"; Components: patch; Flags: {#ExterFlags}; ExternalSize:  002707456
 Source: "{tmp}\ev150.pak"; DestDir: "{app}"; Components: patch; Flags: {#ExterFlags}; ExternalSize:  114393088
 
 ;Videos CC
@@ -142,7 +142,7 @@ begin
     Log('Downloading en.pak.');
     idpAddFile('https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak?dl=1', ExpandConstant('{tmp}\en.pak'));
 
-    DownloadPatchFile('https://www.dropbox.com/s/kkw5xaxq177yu49/ev000.pak?dl=1', 'ev000',   2707456);
+    DownloadPatchFile('https://www.dropbox.com/s/kkw5xaxq177yu49/ev000.pak?dl=1', 'ev000', 002707456);
     DownloadPatchFile('https://www.dropbox.com/s/9mcw7evymo6sbx0/ev150.pak?dl=1', 'ev150', 114393088);
 
     if IsComponentSelected('subbedvideos') then begin
@@ -199,7 +199,7 @@ begin
     if IsComponentSelected('{#SubV}mv090') then IsFileDownloaded('mv090.pak', '\IC\mv090.pak'); 
 
     Log('-- Checking MD5 hashes --');
-    LogMD5CC('en.pak', '');    LogMD5CC('WA2_en.exe', '86b532cefaeac9026d0f5b9cd3ee1ee0');
+    LogMD5CC('en.pak', '');    LogMD5CC('WA2_en.exe', '1397bb8a72d95b81b92673601660cbd0');
     if ev000_DL then LogMD5CC('ev000.pak', '1a66cec0f63148a8baf0458e5c3d4675');
     if ev150_DL then LogMD5CC('ev150.pak', 'de60616ee1641856070e454bea596d83');
     if IsComponentSelected('{#SubV}mv200') then  LogMD5CC('mv200.pak', '2f605315223d7691244189b94b2b13d3');

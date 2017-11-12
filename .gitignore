@@ -5,8 +5,9 @@
 *.db
 *.lnk
 
+*.bat
 *.pak
 *.BKP
 *.manifest
 
-!bin/*
+!bin/*.exe
