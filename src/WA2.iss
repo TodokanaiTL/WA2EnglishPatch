@@ -81,7 +81,7 @@ Source: "{#SourcePath}..\bin\WA2_en.exe"; DestDir: "{app}"; Components: patch
 
 ;Patch Files
 Source: "{tmp}\en.pak";    DestDir: "{app}"; Components: patch; Flags: {#ExterFlags} ignoreversion;
-Source: "{tmp}\ev000.pak"; DestDir: "{app}"; Components: patch; Flags: {#ExterFlags}; ExternalSize:    2707456
+Source: "{tmp}\ev000.pak"; DestDir: "{app}"; Components: patch; Flags: {#ExterFlags}; ExternalSize:  002707456
 Source: "{tmp}\ev150.pak"; DestDir: "{app}"; Components: patch; Flags: {#ExterFlags}; ExternalSize:  114393088
 
 ;Videos CC
@@ -142,7 +142,7 @@ begin
     Log('Downloading en.pak.');
     idpAddFile('https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak?dl=1', ExpandConstant('{tmp}\en.pak'));
 
-    DownloadPatchFile('https://www.dropbox.com/s/kkw5xaxq177yu49/ev000.pak?dl=1', 'ev000',   2707456);
+    DownloadPatchFile('https://www.dropbox.com/s/kkw5xaxq177yu49/ev000.pak?dl=1', 'ev000', 002707456);
     DownloadPatchFile('https://www.dropbox.com/s/9mcw7evymo6sbx0/ev150.pak?dl=1', 'ev150', 114393088);
 
     if IsComponentSelected('subbedvideos') then begin
