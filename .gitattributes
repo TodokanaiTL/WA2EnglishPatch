@@ -3,5 +3,3 @@
 
 /docs/*  diff=astextplain
 /icons/* binary
-
-/bin/* filter=lfs diff=lfs merge=lfs -text
