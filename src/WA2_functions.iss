@@ -1,7 +1,8 @@
 [Code]
+var
+  MD5OfFile: String;
 #ifndef _DL_
 #define _DL_
-var
   ev000_DL, eV150_DL: Boolean;
 #endif
 
@@ -61,18 +62,7 @@ begin
   end;
 end;
 
-procedure IsFileDownloaded(DLName: String; DLPath: String);
-begin
-  if FileExists(ExpandConstant('{app}\' + DLPath)) then begin
-    Log('Succesfully downloaded ' + AddPeriod(DLName));
-  end else begin
-    Log('Error. Failed to download ' + AddPeriod(DLName));
-  end;
-end;
-
 procedure LogMD5CC(NameOfFile: String; ExpectedMD5: String);
-var
-  MD5OfFile: String;
 begin
   if FileExists(ExpandConstant('{app}\' + NameOfFile)) then begin
     try
@@ -82,7 +72,7 @@ begin
     end;
     Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(AnsiUppercase(MD5OfFile)))
     if (NameOfFile = 'en.pak') then begin
-      Log('Hash cannot be verified automatically.');
+      Log('File hash cannot be verified automatically.');
     end else begin
       if (CompareText(MD5OfFile, ExpectedMD5) = 0) then begin
         Log('File hash matches expected hash.');
@@ -116,7 +106,7 @@ begin
   end;
 end;
 
-function CurDateTime:String;
+function CurDateTime: String;
 begin
   Result := GetDateTimeString ('yyyy-mm-dd_hh.nn.ss', '-', '.');
 end;
@@ -124,7 +114,7 @@ end;
 function GetHKLM: Integer;
 begin
   if IsWin64 then
-    Result := HKLM64
+    Result := HKLM64;
   else
     Result := HKLM32;
 end;

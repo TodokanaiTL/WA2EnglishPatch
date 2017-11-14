@@ -2,13 +2,23 @@
 #include "WA2_functions.iss"
 
 #define AppName "White Album 2 English"
-#define AppVersion "0.8.4.6"
+#define AppVersion "0.8.4.7"
 #define AppPublisher "Todokanai TL"
 #define AppURL "https://todokanaitl.wordpress.com"
 #define AppExeName "WA2_en.exe"
 #define AppFileName "WA2_patch"
 #define ExterFlags "external skipifsourcedoesntexist"
 #define SubV "subbedvideos\"
+
+#define MD5_WA2   "1397bb8a72d95b81b92673601660cbd0"
+#define MD5_EV000 "1a66cec0f63148a8baf0458e5c3d4675"
+#define MD5_EV150 "de60616ee1641856070e454bea596d83"
+#define MD5_MV200 "2f605315223d7691244189b94b2b13d3"
+#define MD5_MV010 "797623b4fd9e1587a7757333f88e340c"
+#define MD5_MV020 "2195ee1069d1bf2fc7f7fb59109386d8"
+#define MD5_MV070 "f6c477dfbe1767e0a70554cb40e1e27b"
+#define MD5_MV080 "1890b98d6690f434ab8f7e3fdb37d998"
+#define MD5_MV090 "2e397a50d035e263aa1360062114268a"
 
 [Setup]
 AppId = {{89357994-3C15-4411-894D-A23CE3FF1AA1}
@@ -187,27 +197,17 @@ end;
 procedure DeinitializeSetup();
 begin
   if appIsSet and not wasCancelled then begin
-    Log('-- Checking downloads --')
-    IsFileDownloaded('en.pak', 'en.pak');
-    if ev000_DL then IsFileDownloaded('ev000.pak', 'ev000.pak');
-    if ev150_DL then IsFileDownloaded('ev150.pak', 'ev150.pak');
-    if IsComponentSelected('{#SubV}mv200') then IsFileDownloaded('mv200.pak',     'mv200.pak');
-    if IsComponentSelected('{#SubV}mv010') then IsFileDownloaded('mv010.pak', '\IC\mv010.pak');
-    if IsComponentSelected('{#SubV}mv020') then IsFileDownloaded('mv020.pak', '\IC\mv020.pak');
-    if IsComponentSelected('{#SubV}mv070') then IsFileDownloaded('mv070.pak', '\IC\mv070.pak');
-    if IsComponentSelected('{#SubV}mv080') then IsFileDownloaded('mv080.pak', '\IC\mv080.pak');
-    if IsComponentSelected('{#SubV}mv090') then IsFileDownloaded('mv090.pak', '\IC\mv090.pak'); 
-
-    Log('-- Checking MD5 hashes --');
-    LogMD5CC('en.pak', '');    LogMD5CC('WA2_en.exe', '1397bb8a72d95b81b92673601660cbd0');
-    if ev000_DL then LogMD5CC('ev000.pak', '1a66cec0f63148a8baf0458e5c3d4675');
-    if ev150_DL then LogMD5CC('ev150.pak', 'de60616ee1641856070e454bea596d83');
-    if IsComponentSelected('{#SubV}mv200') then  LogMD5CC('mv200.pak', '2f605315223d7691244189b94b2b13d3');
-    if IsComponentSelected('{#SubV}mv010') then  LogMD5IC('mv010.pak', '797623b4fd9e1587a7757333f88e340c');
-    if IsComponentSelected('{#SubV}mv020') then  LogMD5IC('mv020.pak', '2195ee1069d1bf2fc7f7fb59109386d8');
-    if IsComponentSelected('{#SubV}mv070') then  LogMD5IC('mv070.pak', 'f6c477dfbe1767e0a70554cb40e1e27b');
-    if IsComponentSelected('{#SubV}mv080') then  LogMD5IC('mv080.pak', '1890b98d6690f434ab8f7e3fdb37d998');
-    if IsComponentSelected('{#SubV}mv090') then  LogMD5IC('mv090.pak', '2e397a50d035e263aa1360062114268a');
+    Log('-- Verifying MD5 hashes --');
+    LogMD5CC('en.pak', '');
+    LogMD5CC('WA2_en.exe', '{#MD5_WA2}');
+    if ev000_DL then LogMD5CC('ev000.pak', '{#MD5_EV000}');
+    if ev150_DL then LogMD5CC('ev150.pak', '{#MD5_EV150}');
+    if IsComponentSelected('{#SubV}mv200') then LogMD5CC('mv200.pak', '{#MD5_MV200}');
+    if IsComponentSelected('{#SubV}mv010') then LogMD5IC('mv010.pak', '{#MD5_MV010}');
+    if IsComponentSelected('{#SubV}mv020') then LogMD5IC('mv020.pak', '{#MD5_MV020}');
+    if IsComponentSelected('{#SubV}mv070') then LogMD5IC('mv070.pak', '{#MD5_MV070}');
+    if IsComponentSelected('{#SubV}mv080') then LogMD5IC('mv080.pak', '{#MD5_MV080}');
+    if IsComponentSelected('{#SubV}mv090') then LogMD5IC('mv090.pak', '{#MD5_MV090}');
     
     Log('Setup completed.');
   end;
