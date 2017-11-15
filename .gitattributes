@@ -1,7 +1,9 @@
 * text=auto
-*.md text
+
+*.md   text
+*.MD   text
+*.rtf  text
+*.RTF  text
 
 /docs/*  diff=astextplain
 /icons/* binary
-
-/bin/* filter=lfs diff=lfs merge=lfs -text
