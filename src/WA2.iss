@@ -9,6 +9,7 @@
 #define AppFileName   "WA2_patch"
 
 #define ExterFlags    "external skipifsourcedoesntexist"
+#define PostInFlags   "postinstall skipifsilent"
 #define SubV          "subbedvideos\"
 
 #define MD5_WA2       "1397bb8a72d95b81b92673601660cbd0"
@@ -85,6 +86,10 @@ Name: "{userdocs}\White Album 2 Patch Logs"
 
 [Icons]
 Name: "{commondesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Components: desktopicon
+
+[Run]
+Filename: "{userdocs}\White Album 2 Patch Logs"; Description: Open log folder; Flags: {#PostInFlags} unchecked shellexec
+Filename: "{app}\{#AppExeName}";                 Description: Launch game;     Flags: {#PostInFlags} nowait
    
 [Files]
 Source: "{#SourcePath}..\bin\WA2_en.exe"; DestDir: "{app}"; Components: patch
@@ -142,6 +147,15 @@ begin
 
   Result := True;
 end;
+
+procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
+begin
+  try
+    wasCancelled := True;
+  except
+    ShowExceptionMessage();
+  end;
+end;
   
 procedure CurPageChanged(CurPageID: Integer);
 begin
@@ -149,10 +163,11 @@ begin
 
   if CurPageID = wpReady then begin
     Log('-- Initializing downloads --');
-    idpSetOption('DetailedMode', 'True');
+    idpSetOption('DetailedMode',   'True');
     idpSetOption('ConnectTimeout', 'Infinite');
     idpSetOption('ReceiveTimeout', 'Infinite');
-    idpSetOption('SendTimeout', 'Infinite');
+    idpSetOption('SendTimeout',    'Infinite');
+
     Log('Downloading en.pak.');
     idpAddFile('https://www.dropbox.com/s/rkl4hwij4mshef2/en.pak?dl=1', ExpandConstant('{tmp}\en.pak'));
 
@@ -167,16 +182,12 @@ begin
       {* Introductory Chapter *}
       {* mv010 *}
       DownloadVideoIC('https://www.dropbox.com/s/768bz4ohx3otik7/ev010.pak?dl=1', 'mv010', 014159872);
-
       {* mv020 *}
       DownloadVideoIC('https://www.dropbox.com/s/9kcjcicodjtd7gj/ev020.pak?dl=1', 'mv020', 215715840);
-
       {* mv070 *}
       DownloadVideoIC('https://www.dropbox.com/s/co5upv8f1ocw7m3/ev070.pak?dl=1', 'mv070', 014618624);
-		
       {* mv080 *}
       DownloadVideoIC('https://www.dropbox.com/s/hn57kfgrpzqbpoa/ev080.pak?dl=1', 'mv080', 189677568);
-		
       {* mv090 *}
       DownloadVideoIC('https://www.dropbox.com/s/012laiv3ycm2quk/ev090.pak?dl=1', 'mv090', 230576128);
     end else begin
@@ -198,15 +209,6 @@ begin
     if IsComponentSelected('{#SubV}mv070') then LogMD5IC('mv070.pak', '{#MD5_MV070}');
     if IsComponentSelected('{#SubV}mv080') then LogMD5IC('mv080.pak', '{#MD5_MV080}');
     if IsComponentSelected('{#SubV}mv090') then LogMD5IC('mv090.pak', '{#MD5_MV090}');
-  end;
-end;
-
-procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
-begin
-  try
-    wasCancelled := True;
-  except
-    ShowExceptionMessage();
   end;
 end;
 

@@ -96,8 +96,6 @@ begin
 end;
 
 procedure LogMD5IC(NameOfFile: String; ExpectedMD5: String);
-var
-  MD5OfFile: String;
 begin
   if FileExists(ExpandConstant('{app}\IC\' + NameOfFile)) then begin
     try
