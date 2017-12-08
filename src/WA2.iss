@@ -4,12 +4,14 @@
 #define AppName       "White Album 2 English"
 #define AppVersion    "0.8.4.7"
 #define AppPublisher  "Todokanai TL"
+#define AppCopyright  "Copyright (C) 2017, Todokanai TL"
 #define AppURL        "https://todokanaitl.wordpress.com"
 #define AppExeName    "WA2_en.exe"
 #define AppFileName   "WA2_patch"
 
 #define ExterFlags    "external skipifsourcedoesntexist"
 #define PostInFlags   "postinstall skipifsilent"
+#define LogFolder     "{userdocs}\White Album 2 Patch Logs" 
 #define SubV          "subbedvideos\"
 
 #define MD5_WA2       "1397bb8a72d95b81b92673601660cbd0"
@@ -31,11 +33,14 @@ AppPublisher = {#AppPublisher}
 AppPublisherURL = {#AppURL}
 AppSupportURL = {#AppURL}/contact
 AppUpdatesURL = {#AppURL}/patch
+AppCopyright = {#AppCopyright}
 DefaultGroupName = {#AppName}
 OutputBaseFilename = {#AppFileName}
 OutputDir = {#SourcePath}..\out
 VersionInfoVersion = {#AppVersion}
 VersionInfoDescription = {#Appname} Patch
+VersionInfoCopyright = {#AppCopyright}
+LicenseFile = {#SourcePath}..\LICENSE
 InfoBeforeFile = {#SourcePath}..\docs\Instructions.rtf
 InfoAfterFile = {#SourcePath}..\docs\Release Notes.rtf
 SetupIconFile = {#SourcePath}..\icons\logo.ico
@@ -82,14 +87,14 @@ Name: "{#SubV}mv090"; Description: "mv090";            Types: full
 
 [Dirs]
 Name: "{app}\IC"; Components: subbedvideos
-Name: "{userdocs}\White Album 2 Patch Logs" 
+Name: "{#LogFolder}"
 
 [Icons]
 Name: "{commondesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Components: desktopicon
 
 [Run]
-Filename: "{userdocs}\White Album 2 Patch Logs"; Description: Open log folder; Flags: {#PostInFlags} unchecked shellexec
-Filename: "{app}\{#AppExeName}";                 Description: Launch game;     Flags: {#PostInFlags} nowait
+Filename: "{#LogFolder}";        Description: Open log folder; Flags: {#PostInFlags} unchecked shellexec
+Filename: "{app}\{#AppExeName}"; Description: Launch game;     Flags: {#PostInFlags} nowait
    
 [Files]
 Source: "{#SourcePath}..\bin\WA2_en.exe"; DestDir: "{app}"; Components: patch
@@ -139,13 +144,19 @@ begin
     ShowExceptionMessage;
   end;
 
-  if not  RegKeyExists(GetHKLM, 'Software\Leaf\WHITE ALBUM2') \
-  and not RegKeyExists(HKCU, 'Software\Leaf\WHITE ALBUM2') then begin
-    MsgBox('You have to install the original game before applying the patch.', mbCriticalError, MB_OK);
+  if  not RegKeyExists(HKLM64, 'Software\Leaf\WHITE ALBUM2') \
+  and not RegKeyExists(HKLM32, 'Software\Leaf\WHITE ALBUM2') \
+  and not RegKeyExists(HKCU,   'Software\Leaf\WHITE ALBUM2') then begin
+    MsgBox('You have to install the original game before applying the patch!', mbCriticalError, MB_OK);
     Result := False;
   end;
 
   Result := True;
+end;        
+
+procedure InitializeWizard;
+begin
+  WizardForm.LicenseAcceptedRadio.Checked := True;
 end;
 
 procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
@@ -197,7 +208,7 @@ begin
     idpDownloadAfter(wpReady);  
   end;
 
-  if CurPageID = wpInstalling then begin
+  if CurPageID = wpInfoAfter then begin
     Log('-- Verifying MD5 hashes --');
     LogMD5CC('en.pak', '');
     LogMD5CC('WA2_en.exe', '{#MD5_WA2}');

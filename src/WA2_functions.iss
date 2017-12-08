@@ -86,7 +86,7 @@ begin
         Log('File hash matches expected hash.');
       end else begin 
         Log('Error. Expected: ' + AddPeriod(AnsiUppercase(ExpectedMD5)));
-        MsgBox(NameOfFile + ' is corrupt. Please delete it and run the installer again to redownload it.', mbError, MB_OK);
+        MsgBox(NameOfFile + ' appears to be corrupt. Please delete it and run the installer again to redownload it.', mbError, MB_OK);
       end;
     end;
   end else begin
@@ -108,7 +108,7 @@ begin
       Log('File hash matches expected hash.');
     end else begin 
       Log('Error. Expected: ' + AddPeriod(AnsiUppercase(ExpectedMD5)));
-      MsgBox(NameOfFile + ' is corrupt. Please delete it and run the installer again to redownload it.', mbError, MB_OK);
+      MsgBox(NameOfFile + ' appears to be corrupt. Please delete it and run the installer again to redownload it.', mbError, MB_OK);
     end;
   end else begin
     Log('Error. ' + NameOfFile + ' could not be found.');
@@ -119,13 +119,4 @@ end;
 function CurDateTime: String;
 begin
   Result := GetDateTimeString ('yyyy-mm-dd_hh.nn.ss', '-', '.');
-end;
-
-function GetHKLM: Integer;
-begin
-  if IsWin64 then begin
-    Result := HKLM64;
-  end else begin
-    Result := HKLM32;
-  end;
 end;
