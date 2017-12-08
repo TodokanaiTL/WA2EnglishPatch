@@ -9,4 +9,4 @@
 *.pak
 *.BKP
 
-!bin/*
+!bin/*.exe
