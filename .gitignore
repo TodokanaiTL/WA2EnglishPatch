@@ -4,10 +4,9 @@
 *.tmp
 *.db
 *.lnk
-
 *.bat
+
 *.pak
 *.BKP
-*.manifest
 
 !bin/*.exe
