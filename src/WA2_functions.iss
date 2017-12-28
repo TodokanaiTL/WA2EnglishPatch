@@ -1,32 +1,27 @@
 [Code]
 var
   MD5OfFile: String;
-#ifndef _DL_
-#define _DL_
-  ev000_DL, eV150_DL: Boolean;
-#endif
 
-procedure DownloadPatchFile(PFURL: String; PFName: String; PFSize: Integer);
+function DownloadPatchFile(PFURL: String; PFName: String; PFSize: Integer): Boolean;
 begin
   if not FileExists(ExpandConstant('{app}\' + PFName + '.pak')) then begin
     Log('Downloading ' + PFName + '.pak.')
     idpAddFileSize(PFURL, ExpandConstant('{tmp}\' + PFName + '.pak'), PFSize);
-    case (PFName) of
-      'ev000': ev000_DL := True;
-      'ev150': ev150_DL := True;
-    end;
+    Result := True;
   end else begin
     Log(PFName + '.pak already exists.');
+    Result := False;
   end;
 end;
 
-procedure DownloadVideoCC(MVURL: String; MVName: String; MVSize: Integer);
+function DownloadVideoCC(MVURL: String; MVName: String; MVSize: Integer): Boolean;
 begin
   if IsComponentSelected('subbedvideos\' + MVName) then begin
     Log(MVName + ' has been selected.');
     if FileExists(ExpandConstant('{app}\' + MVName + '.pak')) then begin
       if FileExists(ExpandConstant('{app}\' + MVName + '.pak.BKP')) then begin
         Log(MVName + '.pak already exists.');
+        Result := False;
       end else begin
         if RenameFile(ExpandConstant('{app}\' + MVName + '.pak'), ExpandConstant('{app}\' + MVName + '.pak.BKP')) then begin
           Log('Succesfully created BKP file.');
@@ -35,23 +30,27 @@ begin
         end;
         Log('Downloading ' + MVName + '.pak');
         idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
+        Result := True;
       end;
     end else begin
       Log('Downloading ' + MVName + '.pak');
       idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
+      Result := True;
     end;
   end else begin
     Log(MVName + '.pak hasn''t been selected.');
+    Result := False;
   end;
 end;
 
-procedure DownloadVideoIC(MVURL: String; MVName: String; MVSize: Integer);
+function DownloadVideoIC(MVURL: String; MVName: String; MVSize: Integer): Boolean;
 begin
   if IsComponentSelected('subbedvideos\' + MVName) then begin
     Log(MVName + ' has been selected.');
     if FileExists(ExpandConstant('{app}\IC\' + MVName + '.pak')) then begin
       if FileExists(ExpandConstant('{app}\IC\' + MVName + '.pak.BKP')) then begin
         Log(MVName + '.pak already exists.');
+        Result := False;
       end else begin
         if RenameFile(ExpandConstant('{app}\IC\' + MVName + '.pak'), ExpandConstant('{app}\IC\' + MVName + '.pak.BKP')) then begin
           Log('Succesfully created BKP file.');
@@ -60,13 +59,16 @@ begin
         end;
         Log('Downloading ' + MVName + '.pak');
         idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
+        Result := True;
       end;
     end else begin
       Log('Downloading ' + MVName + '.pak');
       idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
+      Result := True;
     end;
   end else begin
     Log(MVName + '.pak hasn''t been selected.');
+    Result := False;
   end;
 end;
 
@@ -80,11 +82,11 @@ begin
     end;
     Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(AnsiUppercase(MD5OfFile)))
     if (NameOfFile = 'en.pak') then begin
-      Log('File hash cannot be verified automatically.');
+      Log('File hash cannot be verified automatically. (This is not an error.)');
     end else begin
       if (CompareText(MD5OfFile, ExpectedMD5) = 0) then begin
         Log('File hash matches expected hash.');
-      end else begin 
+      end else begin
         Log('Error. Expected: ' + AddPeriod(AnsiUppercase(ExpectedMD5)));
         MsgBox(NameOfFile + ' appears to be corrupt. Please delete it and run the installer again to redownload it.', mbError, MB_OK);
       end;
@@ -106,17 +108,12 @@ begin
     Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(AnsiUppercase(MD5OfFile)))
     if (CompareText(MD5OfFile, ExpectedMD5) = 0) then begin
       Log('File hash matches expected hash.');
-    end else begin 
+    end else begin
       Log('Error. Expected: ' + AddPeriod(AnsiUppercase(ExpectedMD5)));
       MsgBox(NameOfFile + ' appears to be corrupt. Please delete it and run the installer again to redownload it.', mbError, MB_OK);
     end;
   end else begin
     Log('Error. ' + NameOfFile + ' could not be found.');
-    MsgBox(NameOfFile + ' failed to download. Please run the installer again to redownload it.', mbError, MB_OK); 
+    MsgBox(NameOfFile + ' failed to download. Please run the installer again to redownload it.', mbError, MB_OK);
   end;
-end;
-
-function CurDateTime: String;
-begin
-  Result := GetDateTimeString ('yyyy-mm-dd_hh.nn.ss', '-', '.');
 end;
