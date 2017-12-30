@@ -5,7 +5,7 @@
 #define EXTER      "external skipifsourcedoesntexist"
 #define POSTINS    "postinstall skipifsilent"
 
-#define MD5_WA2    "73ebca4eebee83fc8073fe380f1cfb75"
+#define MD5_WA2    "795748323bbc77fdb88b3bc9a2929477"
 #define MD5_EV000  "1a66cec0f63148a8baf0458e5c3d4675"
 #define MD5_EV150  "de60616ee1641856070e454bea596d83"
 #define MD5_MV200  "2f605315223d7691244189b94b2b13d3"
@@ -19,12 +19,12 @@
 ; App info
 AppId = {{89357994-3C15-4411-894D-A23CE3FF1AA1}
 AppName = White Album 2 English
-AppVersion = 0.8.5.0
+AppVersion = 0.8.5.2
 AppPublisher = Todokanai TL
 AppCopyright = Copyright (C) 2017, Todokanai TL
 AppPublisherURL = https://todokanaitl.wordpress.com
 AppSupportURL = https://discord.me/TodokanaiTL
-VersionInfoVersion = 0.8.5.0
+VersionInfoVersion = 0.8.5.2
 VersionInfoDescription = White Album 2 English Patch
 
 ; Output
@@ -142,9 +142,8 @@ begin
   appIsSet := False;
   wasCancelled := False;
 
-  if  not RegKeyExists(HKLM64, 'Software\Leaf\WHITE ALBUM2') \
-  and not RegKeyExists(HKLM32, 'Software\Leaf\WHITE ALBUM2') \
-  and not RegKeyExists(HKCU,   'Software\Leaf\WHITE ALBUM2') then begin
+  if  not RegKeyExists(GetHKLM, 'Software\Leaf\WHITE ALBUM2') \
+  and not RegKeyExists(HKCU,    'Software\Leaf\WHITE ALBUM2') then begin
     MsgBox('You have to install the original game before applying the patch!', mbCriticalError, MB_OK);
     Result := False;
   end else begin

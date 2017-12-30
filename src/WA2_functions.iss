@@ -117,3 +117,9 @@ begin
     MsgBox(NameOfFile + ' failed to download. Please run the installer again to redownload it.', mbError, MB_OK);
   end;
 end;
+
+function GetHKLM: Integer;
+begin
+  if IsWin64 then Result := HKLM64
+  else Result := HKLM32;
+end;
