@@ -1,125 +1,110 @@
 [Code]
-var
-  MD5OfFile: String;
-
-function DownloadPatchFile(PFURL: String; PFName: String; PFSize: Integer): Boolean;
+{* Download necessary patch files *}
+function DownloadPatchFile(url: String; file: String; size: Integer; dest: String): Boolean;
 begin
-  if not FileExists(ExpandConstant('{app}\' + PFName + '.pak')) then begin
-    Log('Downloading ' + PFName + '.pak.')
-    idpAddFileSize(PFURL, ExpandConstant('{tmp}\' + PFName + '.pak'), PFSize);
+  if not FileExists(ExpandConstant(dest + file)) then begin
+    Log('Downloading ' + file)
+    idpAddFileSize(url, ExpandConstant('{tmp}\' + file), size);
     Result := True;
   end else begin
-    Log(PFName + '.pak already exists.');
+    Log(file + ' already exists.');
     Result := False;
   end;
 end;
 
-function DownloadVideoCC(MVURL: String; MVName: String; MVSize: Integer): Boolean;
+{* Download component files and make backups *}
+function DownloadCompFile(url: String; file: String; size: Integer; dest: String; comp: String): Boolean;
 begin
-  if IsComponentSelected('subbedvideos\' + MVName) then begin
-    Log(MVName + ' has been selected.');
-    if FileExists(ExpandConstant('{app}\' + MVName + '.pak')) then begin
-      if FileExists(ExpandConstant('{app}\' + MVName + '.pak.BKP')) then begin
-        Log(MVName + '.pak already exists.');
+  if IsComponentSelected(comp) then begin
+    Log(file + ' has been selected.');
+    if FileExists(ExpandConstant(dest + file)) then begin
+      if FileExists(ExpandConstant(dest + file + '.BKP')) then begin
+        Log(file + ' already exists.');
         Result := False;
       end else begin
-        if RenameFile(ExpandConstant('{app}\' + MVName + '.pak'), ExpandConstant('{app}\' + MVName + '.pak.BKP')) then begin
+        if RenameFile(ExpandConstant(dest + file), ExpandConstant(dest + file + '.BKP')) then begin
           Log('Succesfully created BKP file.');
         end else begin
           Log('Error. Failed to create BKP file.');
         end;
-        Log('Downloading ' + MVName + '.pak');
-        idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
+        Log('Downloading ' + file);
+        idpAddFileSizeComp(url, ExpandConstant('{tmp}\' + file), size, file);
         Result := True;
       end;
     end else begin
-      Log('Downloading ' + MVName + '.pak');
-      idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
+      Log('Downloading ' + file);
+      idpAddFileSizeComp(url, ExpandConstant('{tmp}\' + file), size, file);
       Result := True;
     end;
   end else begin
-    Log(MVName + '.pak hasn''t been selected.');
+    Log(file + ' hasn''t been selected.');
     Result := False;
   end;
 end;
 
-function DownloadVideoIC(MVURL: String; MVName: String; MVSize: Integer): Boolean;
-begin
-  if IsComponentSelected('subbedvideos\' + MVName) then begin
-    Log(MVName + ' has been selected.');
-    if FileExists(ExpandConstant('{app}\IC\' + MVName + '.pak')) then begin
-      if FileExists(ExpandConstant('{app}\IC\' + MVName + '.pak.BKP')) then begin
-        Log(MVName + '.pak already exists.');
-        Result := False;
-      end else begin
-        if RenameFile(ExpandConstant('{app}\IC\' + MVName + '.pak'), ExpandConstant('{app}\IC\' + MVName + '.pak.BKP')) then begin
-          Log('Succesfully created BKP file.');
-        end else begin
-          Log('Error. Failed to create BKP file.');
-        end;
-        Log('Downloading ' + MVName + '.pak');
-        idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
-        Result := True;
-      end;
-    end else begin
-      Log('Downloading ' + MVName + '.pak');
-      idpAddFileSizeComp(MVURL, ExpandConstant('{tmp}\' + MVName + '.pak'), MVSize, MVName);
-      Result := True;
-    end;
-  end else begin
-    Log(MVName + '.pak hasn''t been selected.');
-    Result := False;
-  end;
-end;
+{* Log MD5 checksum of downloaded files *}
+procedure LogFileMD5(file: String; expectedMD5: String; dir: String);
+var
+  fileMD5: String;
 
-procedure LogMD5CC(NameOfFile: String; ExpectedMD5: String);
 begin
-  if FileExists(ExpandConstant('{app}\' + NameOfFile)) then begin
+  if FileExists(ExpandConstant(dir + file)) then begin
     try
-      MD5OfFile := GetMD5OfFile(ExpandConstant('{app}\' + NameOfFile));
+      fileMD5 := GetMD5OfFile(ExpandConstant(dir + file));
     except
        ShowExceptionMessage;
     end;
-    Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(AnsiUppercase(MD5OfFile)))
-    if (NameOfFile = 'en.pak') then begin
+    Log('MD5 hash of ' + file + ': ' + AddPeriod(AnsiUppercase(fileMD5)))
+    if (file = 'en.pak') then begin
       Log('File hash cannot be verified automatically. (This is not an error.)');
     end else begin
-      if (CompareText(MD5OfFile, ExpectedMD5) = 0) then begin
+      if (fileMD5 = expectedMD5) then begin
         Log('File hash matches expected hash.');
       end else begin
-        Log('Error. Expected: ' + AddPeriod(AnsiUppercase(ExpectedMD5)));
-        MsgBox(NameOfFile + ' appears to be corrupt. Please delete it and run the installer again to redownload it.', mbError, MB_OK);
+        Log('Error. Expected: ' + AddPeriod(AnsiUppercase(expectedMD5)));
+        MsgBox(file + ' appears to be corrupt. ' + 'Please delete it ' + \
+              'and run the installer again to redownload it.', mbError, MB_OK);
       end;
     end;
   end else begin
-    Log('Error. ' + NameOfFile + ' could not be found.');
-    MsgBox(NameOfFile + ' failed to download. Please run the installer again to redownload it.', mbError, MB_OK);
+    Log('Error. ' + file + ' could not be found.');
+    MsgBox('Failed to download ' + file + ' Please run the installer again to redownload it.', mbError, MB_OK);
   end;
 end;
 
-procedure LogMD5IC(NameOfFile: String; ExpectedMD5: String);
-begin
-  if FileExists(ExpandConstant('{app}\IC\' + NameOfFile)) then begin
-    try
-      MD5OfFile := GetMD5OfFile(ExpandConstant('{app}\IC\' + NameOfFile));
-    except
-       ShowExceptionMessage;
-    end;
-    Log('MD5 hash of ' + NameOfFile + ': ' + AddPeriod(AnsiUppercase(MD5OfFile)))
-    if (CompareText(MD5OfFile, ExpectedMD5) = 0) then begin
-      Log('File hash matches expected hash.');
-    end else begin
-      Log('Error. Expected: ' + AddPeriod(AnsiUppercase(ExpectedMD5)));
-      MsgBox(NameOfFile + ' appears to be corrupt. Please delete it and run the installer again to redownload it.', mbError, MB_OK);
-    end;
-  end else begin
-    Log('Error. ' + NameOfFile + ' could not be found.');
-    MsgBox(NameOfFile + ' failed to download. Please run the installer again to redownload it.', mbError, MB_OK);
-  end;
-end;
-
+{* Get HKLM corresponding to architecture *}
 function GetHKLM: Integer;
 begin
   if IsWin64 then Result := HKLM64
   else Result := HKLM32;
 end;
+
+{* Split string into array *}
+{* https://stackoverflow.com/a/36895908 *}
+function Split(separator: String; expression: String): TArrayOfString;
+var
+  i: Integer;
+  tmpArray: TArrayOfString;
+  curString: String;
+
+begin
+  i := 0;
+  curString := expression;
+
+  repeat
+    SetArrayLength(tmpArray, i + 1);
+    if Pos(separator, curString) > 0 then begin
+      tmpArray[i] := Copy(curString, 1, Pos(separator, curString) - 1);
+      curString := Copy(curString, Pos(separator,curString) + Length(separator), Length(curString));
+      i := i + 1;
+    end else begin
+      tmpArray[i] := curString;
+      curString := '';
+    end;
+  until Length(curString) = 0;
+
+  Result:= tmpArray;
+end;
+
+{* End *}
+

@@ -1,12 +1,4 @@
-*.exe
-*.dll
 *.ini
-*.tmp
 *.db
-*.lnk
-*.bat
 
-*.pak
-*.BKP
-
-!bin/*.exe
+/out/*
