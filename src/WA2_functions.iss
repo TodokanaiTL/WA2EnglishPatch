@@ -1,82 +1,114 @@
 [Code]
-{* Download necessary patch files *}
-function DownloadPatchFile(url: String; file: String; size: Integer; dest: String): Boolean;
-begin
-  if not FileExists(ExpandConstant(dest + file)) then begin
-    Log('Downloading ' + file)
-    idpAddFileSize(url, ExpandConstant('{tmp}\' + file), size);
-    Result := True;
-  end else begin
-    Log(file + ' already exists.');
-    Result := False;
-  end;
-end;
-
-{* Download component files and make backups *}
-function DownloadCompFile(url: String; file: String; size: Integer; dest: String; comp: String): Boolean;
-begin
-  if IsComponentSelected(comp) then begin
-    Log(file + ' has been selected.');
-    if FileExists(ExpandConstant(dest + file)) then begin
-      if FileExists(ExpandConstant(dest + file + '.BKP')) then begin
-        Log(file + ' already exists.');
-        Result := False;
-      end else begin
-        if RenameFile(ExpandConstant(dest + file), ExpandConstant(dest + file + '.BKP')) then begin
-          Log('Succesfully created BKP file.');
-        end else begin
-          Log('Error. Failed to create BKP file.');
-        end;
-        Log('Downloading ' + file);
-        idpAddFileSizeComp(url, ExpandConstant('{tmp}\' + file), size, file);
-        Result := True;
-      end;
-    end else begin
-      Log('Downloading ' + file);
-      idpAddFileSizeComp(url, ExpandConstant('{tmp}\' + file), size, file);
-      Result := True;
-    end;
-  end else begin
-    Log(file + ' hasn''t been selected.');
-    Result := False;
-  end;
-end;
-
-{* Log MD5 checksum of downloaded files *}
-procedure LogFileMD5(file: String; expectedMD5: String; dir: String);
+{* Verify file MD5 *}
+function VerifyMD5(file: String; expectedMD5: String): Boolean;
 var
   fileMD5: String;
 
 begin
-  if FileExists(ExpandConstant(dir + file)) then begin
+  try
+    fileMD5 := GetMD5OfFile(ExpandConstant(file));
+  except
+    ShowExceptionMessage;
+  end
+  Result := (fileMD5 = expectedMD5);
+end;
+
+{* Download necessary patch files *}
+function DownloadPatchFile(url: String; file: String; size: Integer; \
+                           dest: String; md5: String): Boolean;
+begin
+  if FileExists(ExpandConstant(dest + file))
+  and VerifyMD5(dest + file, md5) then begin
+    Log(file + ' already exists.');
+    Result := False;
+    Exit;
+  end
+  Log('Downloading ' + file)
+  idpAddFileSize(url, ExpandConstant('{tmp}\' + file), size);
+  Result := True;
+end;
+
+{* Download component files and make backups *}
+function DownloadCompFile(url: String; file: String; size: Integer; \
+                          dest: String; md5: String; comp: String): Boolean;
+begin
+  Result := True;
+  if not IsComponentSelected(comp) then begin
+    Log(file + ' hasn''t been selected.');
+    Result := False;
+    Exit;
+  end
+  Log(file + ' has been selected.');
+  if FileExists(ExpandConstant(dest + file)) then begin
+    if VerifyMD5(dest + file, md5) then begin
+      Log(file + ' already exists.');
+      Result := False;
+      Exit;
+    end
+    if RenameFile(ExpandConstant(dest + file), \
+                  ExpandConstant(dest + file + '.BKP'))
+    then Log('Succesfully created BKP file.')
+    else Log('Error. Failed to create BKP file.');
+  end
+  Log('Downloading ' + file);
+  idpAddFileSizeComp(url, ExpandConstant('{tmp}\' + file), size, file);
+end;
+
+{* Log MD5 checksum of downloaded files *}
+procedure LogFileMD5(file: String; expectedMD5: String);
+var
+  fileMD5: String;
+  baseName: String;
+  err: String;
+
+begin
+  if FileExists(ExpandConstant(file)) then begin
     try
-      fileMD5 := GetMD5OfFile(ExpandConstant(dir + file));
+      baseName := ExtractFileName(file);
+      fileMD5 := GetMD5OfFile(ExpandConstant(file));
     except
        ShowExceptionMessage;
     end;
-    Log('MD5 hash of ' + file + ': ' + AddPeriod(AnsiUppercase(fileMD5)))
-    if (file = 'en.pak') then begin
-      Log('File hash cannot be verified automatically. (This is not an error.)');
+    Log('MD5 hash of ' + baseName + \
+        ': ' + AnsiUppercase(fileMD5) + '.');
+    if (baseName = 'en.pak') then begin
+      Log('File hash cannot be verified automatically.' + \
+          ' (This is not an error.)');
     end else begin
       if (fileMD5 = expectedMD5) then begin
         Log('File hash matches expected hash.');
       end else begin
-        Log('Error. Expected: ' + AddPeriod(AnsiUppercase(expectedMD5)));
-        MsgBox(file + ' appears to be corrupt. ' + 'Please delete it ' + \
-              'and run the installer again to redownload it.', mbError, MB_OK);
+        Log('Error. Expected: ' + AnsiUppercase(expectedMD5) + '.');
+        err := baseName + ' appears to be corrupt. Delete it' + \
+               ' and run the installer again to redownload it.';
+        MsgBox(err, mbError, MB_OK);
       end;
     end;
   end else begin
-    Log('Error. ' + file + ' could not be found.');
-    MsgBox('Failed to download ' + file + ' Please run the installer again to redownload it.', mbError, MB_OK);
+    Log('Error. ' + baseName + ' could not be found.');
+    err := 'Failed to download ' + baseName + \
+           ' Run the installer again to redownload it.';
+    MsgBox(err, mbError, MB_OK);
   end;
 end;
 
-{* Get HKLM corresponding to architecture *}
-function GetHKLM: Integer;
+{* Get file URL on Disroot by its hash *}
+function DisrootURL(hash: String): String;
 begin
-  if IsWin64 then Result := HKLM64
-  else Result := HKLM32;
+  Result := 'https://cloud.disroot.org/s/' + hash + '/download';
+end;
+
+{* Check if WA2 exists in the registry *}
+function CheckRegistry(): Boolean;
+var
+  key: String;
+  isInHKLM: Boolean;
+
+begin
+  key := 'Software\Leaf\WHITE ALBUM2';
+  if IsWin64 then isInHKLM := RegKeyExists(HKLM64, key)
+  else isInHKLM := RegKeyExists(HKLM32, key);
+  Result := (isInHKLM or RegKeyExists(HKCU, key));
 end;
 
 {* Split string into array *}
@@ -95,7 +127,8 @@ begin
     SetArrayLength(tmpArray, i + 1);
     if Pos(separator, curString) > 0 then begin
       tmpArray[i] := Copy(curString, 1, Pos(separator, curString) - 1);
-      curString := Copy(curString, Pos(separator,curString) + Length(separator), Length(curString));
+      curString := Copy(curString, Pos(separator,curString) + \
+                        Length(separator), Length(curString));
       i := i + 1;
     end else begin
       tmpArray[i] := curString;
@@ -103,8 +136,11 @@ begin
     end;
   until Length(curString) = 0;
 
-  Result:= tmpArray;
+  Result := tmpArray;
 end;
+
+procedure ExitProcess(exitCode: Integer);
+  external 'ExitProcess@kernel32.dll stdcall';
 
 {* End *}
 

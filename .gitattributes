@@ -1,5 +1,8 @@
-* text=auto
+*.md  text eol=lf
+.git* text eol=lf
 
-/docs/*  diff=astextplain
+/src  text eol=crlf
+/docs text eol=crlf diff=astextplain
 
-/icons/* binary
+/res  binary
+/bin  binary
