@@ -1,3 +1,5 @@
+# CHANGELOG
+
 ## v0.8.7.0
 
 - Bug fixes

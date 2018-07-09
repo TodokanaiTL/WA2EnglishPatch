@@ -2,3 +2,7 @@
 *.db
 
 /out/*
+
+_site/
+Gemfile.lock
+
