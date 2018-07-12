@@ -1,13 +1,14 @@
 #include <idp.iss>
 #include "WA2_functions.iss"
 
-#define VERSION     "0.8.7.0"
+#define VERSION     "0.8.7.1"
+#define EXEFILE     SourcePath + "..\bin\WA2_en.exe"
 #define WA2DOCS     "{userdocs}\Leaf\WHITE ALBUM2"
-#define LOGDIR      "{userdocs}\White Album 2 Patch Logs"
+#define LOGDIR      "{userdocs}\White Album 2 Patch Logs\"
 #define EXTER       "external skipifsourcedoesntexist"
 #define POSTINS     "postinstall skipifsilent"
 
-#define MD5_WA2     GetMD5OfFile(SourcePath + "../bin/WA2_en.exe")
+#define MD5_WA2     GetMD5OfFile(EXEFILE)
 #define MD5_EV000   "1a66cec0f63148a8baf0458e5c3d4675"
 #define MD5_EV150   "ed4978b7f10ea70bf0ee1315a87be4a1"
 #define MD5_MV010   "797623b4fd9e1587a7757333f88e340c"
@@ -33,7 +34,7 @@ AppName = White Album 2 English
 AppVersion = {#VERSION}
 AppPublisher = Todokanai TL
 AppCopyright = Copyright (C) 2017, Todokanai TL
-AppPublisherURL = https://todokanaitl.wordpress.com
+AppPublisherURL = https://todokanaitl.github.io
 AppSupportURL = https://discord.me/TodokanaiTL
 VersionInfoVersion = {#VERSION}
 VersionInfoDescription = White Album 2 English Patch
@@ -119,12 +120,12 @@ Filename: "{app}\WA2_en.exe"; Description: Launch game;     Flags: {#POSTINS} no
 
 [Files]
 ; Executable
-Source: "{#SourcePath}..\bin\WA2_en.exe"; DestDir: "{app}"; Components: patch
+Source: "{#EXEFILE}";      DestDir: "{app}";    Components: patch;        Flags: ignoreversion;
 
 ; Patch files
-Source: "{tmp}\en.pak";    DestDir: "{app}"; Components: patch; Flags: {#EXTER} ignoreversion;
-Source: "{tmp}\ev000.pak"; DestDir: "{app}"; Components: patch; Flags: {#EXTER}; ExternalSize:  {#SIZE_EV000}
-Source: "{tmp}\ev150.pak"; DestDir: "{app}"; Components: patch; Flags: {#EXTER}; ExternalSize:  {#SIZE_EV150}
+Source: "{tmp}\en.pak";    DestDir: "{app}";    Components: patch;        Flags: {#EXTER} ignoreversion;
+Source: "{tmp}\ev000.pak"; DestDir: "{app}";    Components: patch;        Flags: {#EXTER}; ExternalSize: {#SIZE_EV000}
+Source: "{tmp}\ev150.pak"; DestDir: "{app}";    Components: patch;        Flags: {#EXTER}; ExternalSize: {#SIZE_EV150}
 
 ; IC Videos
 Source: "{tmp}\mv010.pak"; DestDir: "{app}\IC"; Components: videos\mv010; Flags: {#EXTER}; ExternalSize: {#SIZE_MV010}
@@ -135,6 +136,7 @@ Source: "{tmp}\mv090.pak"; DestDir: "{app}\IC"; Components: videos\mv090; Flags:
 
 ; CC Videos
 Source: "{tmp}\mv200.pak"; DestDir: "{app}";    Components: videos\mv200; Flags: {#EXTER}; ExternalSize: {#SIZE_MV200}
+
 
 [Code]
 const
@@ -149,8 +151,8 @@ var
   fileSizes:     TArrayOfString;
   fileNames:     TArrayOfString;
   urlHashes:     TArrayOfString;
-  index:         Integer;
   isDMM:         Boolean;
+  index:         Integer;
   err:           String;
   size:          Integer;
 
@@ -166,7 +168,7 @@ begin
   appIsSet := False;
   wasCancelled := False;
 
-  if not (isDMM or CheckRegistry()) then begin
+  if not (isDMM or IsWine() or IsInstalled()) then begin
     err := 'You have to install the original game before applying the patch!';
     MsgBox(err, mbCriticalError, MB_OK);
     Result := False;
@@ -280,11 +282,11 @@ end;
 
 procedure DeinitializeSetup();
 begin
+  RestartReplace(ExpandConstant('{log}'), '');
   if not appIsSet then Exit;
   if not wasCancelled then Log('Setup completed.');
   FileCopy(ExpandConstant('{log}'), ExpandConstant('{#LOGDIR}') + \
            'WA2_Patch_Log_' + dateTime + '.log', False);
-  RestartReplace(ExpandConstant('{log}'), '');
 end;
 
 {* End *}

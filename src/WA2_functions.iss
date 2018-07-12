@@ -98,17 +98,27 @@ begin
   Result := 'https://cloud.disroot.org/s/' + hash + '/download';
 end;
 
-{* Check if WA2 exists in the registry *}
-function CheckRegistry(): Boolean;
+{* Check if key exists in the registry *}
+function CheckRegistry(key: String): Boolean;
 var
-  key: String;
   isInHKLM: Boolean;
 
 begin
-  key := 'Software\Leaf\WHITE ALBUM2';
   if IsWin64 then isInHKLM := RegKeyExists(HKLM64, key)
   else isInHKLM := RegKeyExists(HKLM32, key);
   Result := (isInHKLM or RegKeyExists(HKCU, key));
+end;
+
+{* Check if running on wine *}
+function IsWine(): Boolean;
+begin
+  Result := CheckRegistry('Software\Wine');
+end;
+
+{* Check the registry for WA2 *}
+function IsInstalled(): Boolean;
+begin
+  Result := CheckRegistry('Software\Leaf\WHITE ALBUM2');
 end;
 
 {* Split string into array *}
