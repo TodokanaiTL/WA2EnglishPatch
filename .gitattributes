@@ -1,8 +1,11 @@
 *.md  text eol=lf
 .git* text eol=lf
 
-/src  text eol=crlf
-/docs text eol=crlf diff=astextplain
+src/  text eol=crlf
+docs/ text eol=crlf diff=astextplain
 
-/res  binary
-/bin  binary
+res/  binary
+bin/  binary
+
+Gemfile linguist-vendored
+
