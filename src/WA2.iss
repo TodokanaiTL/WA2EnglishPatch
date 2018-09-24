@@ -1,7 +1,7 @@
 #include <idp.iss>
 #include "WA2_functions.iss"
 
-#define VERSION     "0.8.7.1"
+#define VERSION     "0.9.0.0"
 #define EXEFILE     SourcePath + "..\bin\WA2_en.exe"
 #define WA2DOCS     "{userdocs}\Leaf\WHITE ALBUM2"
 #define LOGDIR      "{userdocs}\White Album 2 Patch Logs\"
@@ -164,7 +164,7 @@ begin
     ShowExceptionMessage;
   end;
 
-  isDMM := False; // Set to True for the DMM patch
+  isDMM := False; {* Set to True for the DMM patch *}
   appIsSet := False;
   wasCancelled := False;
 
