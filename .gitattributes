@@ -1,11 +1,8 @@
-*.md  text eol=lf
-.git* text eol=lf
+* text eol=crlf
 
-src/  text eol=crlf
-docs/ text eol=crlf diff=astextplain
+res/* binary
+bin/* binary
 
-res/  binary
-bin/  binary
+docs/* diff=astextplain
 
 Gemfile linguist-vendored
-

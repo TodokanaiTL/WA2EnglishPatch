@@ -1,7 +1,10 @@
 #include <idp.iss>
 #include "WA2_functions.iss"
 
-#define VERSION     "0.9.0.0"
+#ifndef VERSION
+#define VERSION     "0.9.0.1"
+#endif
+
 #define EXEFILE     SourcePath + "..\bin\WA2_en.exe"
 #define WA2DOCS     "{userdocs}\Leaf\WHITE ALBUM2"
 #define LOGDIR      "{userdocs}\White Album 2 Patch Logs\"
@@ -35,13 +38,17 @@ AppVersion = {#VERSION}
 AppPublisher = Todokanai TL
 AppCopyright = Copyright (C) 2017, Todokanai TL
 AppPublisherURL = https://todokanaitl.github.io
-AppSupportURL = https://discord.me/TodokanaiTL
+AppSupportURL = https://discord.gg/5rrxEUN
 VersionInfoVersion = {#VERSION}
 VersionInfoDescription = White Album 2 English Patch
 
 ; Output
 OutputDir = {#SourcePath}..\out
+#ifdef IS_DMM
+OutputBaseFilename = WA2_patch_DMM
+#else
 OutputBaseFilename = WA2_patch
+#endif
 
 ; Included files
 LicenseFile = {#SourcePath}..\LICENSE
@@ -50,11 +57,7 @@ InfoAfterFile = {#SourcePath}..\docs\Release Notes.rtf
 SetupIconFile = {#SourcePath}..\res\logo.ico
 
 ; Compression
-Compression = lzma2/ultra
-InternalCompressLevel = ultra
-LZMAUseSeparateProcess = yes
-LZMADictionarySize = 524288
-LZMANumFastBytes = 273
+Compression = bzip/9
 SolidCompression = yes
 
 ; Installation
@@ -62,6 +65,7 @@ DefaultDirName = {src}
 AppendDefaultDirName = no
 UsePreviousAppDir = yes
 PrivilegesRequired = admin
+UsedUserAreasWarning = no
 AllowCancelDuringInstall = yes
 DisableProgramGroupPage = yes
 EnableDirDoesntExistWarning = yes
@@ -72,6 +76,7 @@ Uninstallable = no
 TimeStampsInUTC = yes
 SetupLogging = yes
 DefaultDialogFontName = Lucida Sans Unicode
+WizardStyle = modern
 
 [Languages]
 ; Setup language
@@ -111,7 +116,7 @@ Name: "{commondesktop}\White Album 2"; Filename: "{app}\WA2_en.exe"; Components:
 
 [INI]
 ; Edit SYSTEM.ini
-Filename: "{#WA2DOCS}\SYSTEM.ini"; Section: "DEFAULT"; Key: "mov_lv"; String: 2;
+Filename: "{#WA2DOCS}\SYSTEM.ini"; Section: "DEFAULT"; Key: "mov_lv"; String: 2
 
 [Run]
 ; Postinstall options
@@ -120,10 +125,10 @@ Filename: "{app}\WA2_en.exe"; Description: Launch game;     Flags: {#POSTINS} no
 
 [Files]
 ; Executable
-Source: "{#EXEFILE}";      DestDir: "{app}";    Components: patch;        Flags: ignoreversion;
+Source: "{#EXEFILE}";      DestDir: "{app}";    Components: patch;        Flags: ignoreversion
 
 ; Patch files
-Source: "{tmp}\en.pak";    DestDir: "{app}";    Components: patch;        Flags: {#EXTER} ignoreversion;
+Source: "{tmp}\en.pak";    DestDir: "{app}";    Components: patch;        Flags: {#EXTER} ignoreversion
 Source: "{tmp}\ev000.pak"; DestDir: "{app}";    Components: patch;        Flags: {#EXTER}; ExternalSize: {#SIZE_EV000}
 Source: "{tmp}\ev150.pak"; DestDir: "{app}";    Components: patch;        Flags: {#EXTER}; ExternalSize: {#SIZE_EV150}
 
@@ -136,7 +141,6 @@ Source: "{tmp}\mv090.pak"; DestDir: "{app}\IC"; Components: videos\mv090; Flags:
 
 ; CC Videos
 Source: "{tmp}\mv200.pak"; DestDir: "{app}";    Components: videos\mv200; Flags: {#EXTER}; ExternalSize: {#SIZE_MV200}
-
 
 [Code]
 const
@@ -151,7 +155,6 @@ var
   fileSizes:     TArrayOfString;
   fileNames:     TArrayOfString;
   urlHashes:     TArrayOfString;
-  isDMM:         Boolean;
   index:         Integer;
   err:           String;
   size:          Integer;
@@ -164,16 +167,17 @@ begin
     ShowExceptionMessage;
   end;
 
-  isDMM := False; {* Set to True for the DMM patch *}
   appIsSet := False;
   wasCancelled := False;
 
-  if not (isDMM or IsWine() or IsInstalled()) then begin
+#ifndef IS_DMM
+  if not (IsWine() or IsInstalled()) then begin
     err := 'You have to install the original game before applying the patch!';
     MsgBox(err, mbCriticalError, MB_OK);
     Result := False;
     ExitProcess(3);
-  end
+  end;
+#endif
   Result := True;
 end;
 
@@ -203,7 +207,7 @@ begin
       for index := 0 to (GetArrayLength(destDir) - 1) do begin
         downloaded[index] := 'no';
         destDir[index] := '{app}\';
-      end
+      end;
       md5Sums := Split(' ', \
         '{#MD5_EV000} {#MD5_EV150} {#MD5_MV010} \
          {#MD5_MV020} {#MD5_MV070} {#MD5_MV080} \
@@ -221,7 +225,7 @@ begin
          b7DlHjPRgro8wyp kDDSTHYUEi6wRP2');
     except
       ShowExceptionMessage;
-    end
+    end;
 
     Log('-- Initialising downloads --');
     idpSetOption('RetryButton',    '0');
@@ -241,10 +245,10 @@ begin
                            StrToInt(fileSizes[index]), \
                            destDir[index], md5Sums[index])
       then downloaded[index] := fileNames[index];
-    end
+    end;
 
     {* Download selected videos *}
-    if IsComponentSelected('videos') then begin
+    if WizardIsComponentSelected('videos') then begin
       for index := 2 to (FILENUM - 1) do begin
         if index < 7 then destDir[index] := '{app}\IC\';
         if DownloadCompFile(DisrootURL(urlHashes[index]), \
@@ -256,11 +260,11 @@ begin
       end
     end else begin
       Log('No videos have been selected.');
-    end
+    end;
 
     Log('Downloading ' + IntToStr(idpFilesCount) + ' file(s).');
     idpDownloadAfter(wpReady);
-  end
+  end;
 
   if CurPageID = wpFinished then begin
     Log('-- Verifying files --');
@@ -274,10 +278,10 @@ begin
                  ' appears to be corrupt. Delete it and' + \
                  ' run the installer again to redownload it.';
           MsgBox(err, mbError, MB_OK);
-        end
-      end
-    end
-  end
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure DeinitializeSetup();
@@ -288,6 +292,3 @@ begin
   FileCopy(ExpandConstant('{log}'), ExpandConstant('{#LOGDIR}') + \
            'WA2_Patch_Log_' + dateTime + '.log', False);
 end;
-
-{* End *}
-

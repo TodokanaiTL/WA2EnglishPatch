@@ -1,0 +1,44 @@
+version: '{branch}-{build}'
+
+skip_non_tags: true
+
+environment:
+  PATH: 'C:\Program Files (x86)\Inno Setup 6;%PATH%'
+
+init:
+  - ps: >-
+      if($env:APPVEYOR_REPO_TAG -eq "true") {
+        Update-AppveyorBuild -Version $($env:APPVEYOR_REPO_TAG_NAME.Substring(1))
+      }
+  - ps: >-
+      Start-FileDownload -FileName "C:\idpsetup-1.5.1.exe" "https://bitbucket.org/mitrich_k/inno-download-plugin/downloads/idpsetup-1.5.1.exe";
+
+install:
+  - choco install -y innosetup
+  - C:\idpsetup-1.5.1.exe /VERYSILENT /TYPE=compact
+
+build_script:
+  - ISCC.exe /I"C:\Program Files (x86)\Inno Download Plugin" src\WA2.iss
+  - ISCC.exe /I"C:\Program Files (x86)\Inno Download Plugin" /DIS_DMM src\WA2.iss
+
+artifacts:
+  - path: out\WA2_patch.exe
+    name: WA2 patch
+  - path: out\WA2_patch_DMM.exe
+    name: WA2 patch (DMM)
+
+before_deploy:
+  - ps: >-
+      if(!$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED) {
+        $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED = "* $env:APPVEYOR_REPO_COMMIT_MESSAGE"
+      }
+
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: tZicH5QK+eVtmDDtBFAiIfKiTGo2hAhYUjYnANurws9QMQuDiXex05LiexEqGXUV
+    artifact: out\WA2_patch.exe,out\WA2_patch_DMM.exe
+    description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
+    prerelease: true
+    on:
+      APPVEYOR_REPO_TAG: true

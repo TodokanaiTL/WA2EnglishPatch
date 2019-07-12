@@ -9,7 +9,7 @@ begin
     fileMD5 := GetMD5OfFile(ExpandConstant(file));
   except
     ShowExceptionMessage;
-  end
+  end;
   Result := (fileMD5 = expectedMD5);
 end;
 
@@ -22,8 +22,8 @@ begin
     Log(file + ' already exists.');
     Result := False;
     Exit;
-  end
-  Log('Downloading ' + file)
+  end;
+  Log('Downloading ' + file);
   idpAddFileSize(url, ExpandConstant('{tmp}\' + file), size);
   Result := True;
 end;
@@ -33,23 +33,23 @@ function DownloadCompFile(url: String; file: String; size: Integer; \
                           dest: String; md5: String; comp: String): Boolean;
 begin
   Result := True;
-  if not IsComponentSelected(comp) then begin
+  if not WizardIsComponentSelected(comp) then begin
     Log(file + ' hasn''t been selected.');
     Result := False;
     Exit;
-  end
+  end;
   Log(file + ' has been selected.');
   if FileExists(ExpandConstant(dest + file)) then begin
     if VerifyMD5(dest + file, md5) then begin
       Log(file + ' already exists.');
       Result := False;
       Exit;
-    end
+    end;
     if RenameFile(ExpandConstant(dest + file), \
                   ExpandConstant(dest + file + '.BKP'))
     then Log('Succesfully created BKP file.')
     else Log('Error. Failed to create BKP file.');
-  end
+  end;
   Log('Downloading ' + file);
   idpAddFileSizeComp(url, ExpandConstant('{tmp}\' + file), size, file);
 end;
@@ -87,7 +87,7 @@ begin
   end else begin
     Log('Error. ' + baseName + ' could not be found.');
     err := 'Failed to download ' + baseName + \
-           ' Run the installer again to redownload it.';
+           '. Run the installer again to redownload it.';
     MsgBox(err, mbError, MB_OK);
   end;
 end;
@@ -151,6 +151,3 @@ end;
 
 procedure ExitProcess(exitCode: Integer);
   external 'ExitProcess@kernel32.dll stdcall';
-
-{* End *}
-
