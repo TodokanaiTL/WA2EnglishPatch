@@ -1,8 +1,7 @@
 *.ini
 *.db
-
-/out/*
-
+*.exe
+*.dll
+out/
 _site/
 Gemfile.lock
-

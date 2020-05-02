@@ -2,7 +2,7 @@
 #include "WA2_functions.iss"
 
 #ifndef VERSION
-#define VERSION     "0.9.0.1"
+#define VERSION     "0.9.0.2"
 #endif
 
 #define EXEFILE     SourcePath + "..\bin\WA2_en.exe"
@@ -158,6 +158,7 @@ var
   index:         Integer;
   err:           String;
   size:          Integer;
+  folder:        String;
 
 function InitializeSetup(): Boolean;
 begin
@@ -171,19 +172,23 @@ begin
   wasCancelled := False;
 
 #ifndef IS_DMM
-  if not (IsWine() or IsInstalled()) then begin
+  if not IsInstalled() then begin
     err := 'You have to install the original game before applying the patch!';
     MsgBox(err, mbCriticalError, MB_OK);
     Result := False;
     ExitProcess(3);
   end;
 #endif
+
   Result := True;
 end;
 
 procedure InitializeWizard();
 begin
   WizardForm.LicenseAcceptedRadio.Checked := True;
+#ifndef IS_DMM
+  if GetInstallDir(folder) then WizardForm.DirEdit.Text := folder;
+#endif
 end;
 
 procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
@@ -227,7 +232,7 @@ begin
       ShowExceptionMessage;
     end;
 
-    Log('-- Initialising downloads --');
+    Log('-- Initializing downloads --');
     idpSetOption('RetryButton',    '0');
     idpSetOption('DetailedMode',   '1');
     idpSetOption('AllowContinue',  '1');

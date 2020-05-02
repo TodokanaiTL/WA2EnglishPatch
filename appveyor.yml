@@ -8,14 +8,15 @@ environment:
 init:
   - ps: >-
       if($env:APPVEYOR_REPO_TAG -eq "true") {
-        Update-AppveyorBuild -Version $($env:APPVEYOR_REPO_TAG_NAME.Substring(1))
+        Update-AppveyorBuild -Version $env:APPVEYOR_REPO_TAG_NAME.Substring(1)
       }
   - ps: >-
-      Start-FileDownload -FileName "C:\idpsetup-1.5.1.exe" "https://bitbucket.org/mitrich_k/inno-download-plugin/downloads/idpsetup-1.5.1.exe";
+      Start-FileDownload -FileName "$env:TEMP\idpsetup-1.5.1.exe" `
+        "https://bitbucket.org/mitrich_k/inno-download-plugin/downloads/idpsetup-1.5.1.exe";
 
 install:
   - choco install -y innosetup
-  - C:\idpsetup-1.5.1.exe /VERYSILENT /TYPE=compact
+  - '%TEMP%\idpsetup-1.5.1.exe /VERYSILENT /TYPE=compact'
 
 build_script:
   - ISCC.exe /I"C:\Program Files (x86)\Inno Download Plugin" src\WA2.iss
