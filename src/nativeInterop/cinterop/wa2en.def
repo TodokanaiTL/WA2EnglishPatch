@@ -1,0 +1,3 @@
+package = wa2en
+headers = wa2en.h
+headerFilter = wa2en.h

@@ -1,0 +1,8 @@
+headers = curl/curl.h
+headerFilter = curl/*
+linkerOpts = -lcurl
+linkerOpts.mingw = -lcurl -lnghttp2 -lz -lnormaliz -lcrypt32 -lws2_32
+staticLibraries.mingw = libcurl.a libnghttp2.a libz.a
+compilerOpts.mingw = -DCURL_STATICLIB -DNGHTTP2_STATICLIB
+libraryPaths.mingw = C:/msys64/mingw64/lib
+strictEnums = CURLcode

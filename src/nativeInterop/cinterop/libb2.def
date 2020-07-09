@@ -1,0 +1,27 @@
+headers = blake2.h
+headerFilter = blake2.h
+linkerOpts = -lb2
+staticLibraries.mingw = libb2.a
+libraryPaths.mingw = C:/msys64/mingw64/lib
+---
+#include <blake2.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define DIGEST_SIZE 16
+
+static const unsigned char __table[] = "0123456789ABCDEF";
+
+void blake2sum(char *buffer, FILE *fp) {
+    fseek(fp, 0L, SEEK_END);
+    long size = ftell(fp);
+    fseek(fp, 0L, SEEK_SET);
+    char *data = malloc(size);
+    fread(data, size, 1L, fp);
+    unsigned char *bytes = malloc(DIGEST_SIZE);
+    blake2b(bytes, data, NULL, DIGEST_SIZE, size, 0L);
+    free(data);
+    for (int n = (DIGEST_SIZE << 1) - 1; n >= 0; --n)
+        buffer[n] = __table[(bytes[n >> 1] >> ((~n & 1) << 2)) & 0xF];
+    free(bytes);
+}

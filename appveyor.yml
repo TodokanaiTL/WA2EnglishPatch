@@ -1,0 +1,46 @@
+version: '{branch}-{build}'
+
+environment:
+  PATH: 'C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%'
+
+cache:
+  - '%USERPROFILE%\.gradle\caches'
+  - 'C:\msys64\var\cache\pacman\pkg'
+  - '%USERPROFILE%\.konan\dependencies'
+
+install:
+  - bash -c "pacman -Syu --needed --noconfirm"
+  - bash -c "pacman -S --needed --noconfirm base-devel mingw-w64-x86_64-toolchain"
+  - bash -c "pacman -S --needed --noconfirm mingw-w64-x86_64-{nghttp2,zlib}"
+
+before_build:
+  - ps: >-
+      if ($env:APPVEYOR_REPO_TAG -eq "true") {
+        Update-AppveyorBuild -Version $env:APPVEYOR_REPO_TAG_NAME.Substring(1)
+      }
+
+build_script:
+  - '.\gradlew --no-daemon mingwInstallLibcurl mingwInstallLibb2 build'
+
+after_build:
+  - 'strip build\bin\native\releaseExecutable\WA2_patch.exe'
+
+artifacts:
+  - path: 'build\bin\native\releaseExecutable\WA2_patch.exe'
+    name: WA2_patch
+
+# before_deploy:
+#   - ps: >-
+#       if(!$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED) {
+#         $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED = "* $env:APPVEYOR_REPO_COMMIT_MESSAGE"
+#       }
+#
+# deploy:
+#   - provider: GitHub
+#     auth_token:
+#       secure: tZicH5QK+eVtmDDtBFAiIfKiTGo2hAhYUjYnANurws9QMQuDiXex05LiexEqGXUV
+#     artifact: WA2_patch
+#     description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
+#     prerelease: true
+#     on:
+#       APPVEYOR_REPO_TAG: true

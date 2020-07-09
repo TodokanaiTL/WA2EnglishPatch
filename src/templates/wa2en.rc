@@ -1,0 +1,39 @@
+MAINICON ICON "wa2en.ico"
+
+1 24 "wa2en.manifest"
+
+1 VERSIONINFO
+FILEVERSION @cversion@
+PRODUCTVERSION @cversion@
+#ifdef _DEBUG
+FILEFLAGS 3 // VS_FF_PRERELEASE | VS_FF_DEBUG
+#else
+FILEFLAGS 2 // VS_FF_PRERELEASE
+#endif
+FILEOS 0x4 // VOS__WINDOWS32
+FILETYPE 0x1 // VFT_APP
+
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904B0" // U.S. English - Unicode
+		BEGIN
+			VALUE "Comments", "Kotlin/Native rewrite\0"
+			VALUE "CompanyName", "Todokanai TL\0"
+			VALUE "FileDescription", "White Album 2 English Patch\0"
+			VALUE "FileVersion", "@version@\0"
+			VALUE "LegalCopyright", "Copyright (C) 2020, Todokanai TL\0"
+			VALUE "OriginalFileName", "WA2_patch.exe\0"
+			VALUE "InternalName", "wa2en\0"
+			VALUE "ProductName", "White Album 2 English Patch\0"
+			VALUE "ProductVersion", "@version@\0"
+		END
+	END
+
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x0409, 0x04B0
+	END
+END
+
+// vim:noet:
