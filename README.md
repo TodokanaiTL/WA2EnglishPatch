@@ -7,7 +7,6 @@ This is the Kotlin/Native rewrite of the patch.
 * [x] Optional video downloads
 * [x] Verify downloaded file checksums
 * [ ] Automatically find installation folder
-* [ ] Installation instructions
 * [ ] Create `WA2_en` desktop shortcut
 * [x] Launch `WA2_en` after installation
 * [ ] Write operations to a log file
@@ -25,14 +24,14 @@ This is the Kotlin/Native rewrite of the patch.
 * Edit `SYSTEM.ini`
 * License agreement
 * Release notes
+* Instructions
 
 ## Build instructions
 
 ### Arch Linux
 
 ```sh
-# replace yay with your AUR helper
-yay -S --needed jdk-openjdk curl libb2
+sudo pacman -S --needed jdk-openjdk curl libb2
 git clone https://github.com/TodokanaiTL/WA2EnglishPatch
 cd WA2EnglishPatch && git checkout rewrite
 ./gradlew runReleaseExecutableNative

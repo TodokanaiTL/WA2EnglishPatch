@@ -31,6 +31,7 @@ class CURL(
     )
 
     init {
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, true)
         curl_easy_setopt(curl, CURLOPT_URL, urls[name])
         curl_easy_setopt(curl, CURLOPT_XFERINFODATA, bar)
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, true)

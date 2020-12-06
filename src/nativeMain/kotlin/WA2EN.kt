@@ -5,6 +5,7 @@ import kotlinx.coroutines.*
 import kotlin.native.concurrent.TransferMode
 import kotlin.native.concurrent.Worker
 import libui.*
+import platform.posix.chdir
 
 val files = arrayOf(
         "WA2_en.exe", "en.pak", "ev000.pak", "ev150.pak",
@@ -38,7 +39,7 @@ fun patch(button: CPointer<uiButton>?, data: COpaquePointer?): Unit = runBlockin
                 val name = label.toKString()
                 uiFreeText(label)
                 val file = File("$location/$name")
-                if (name != "WA2_en.exe" && name != "en.pak") {
+                if (files.indexOf(name) > 3) {
                     if (File.exists("$file.bkp"))
                         return@launch uiProgressBarSetValue(bars[name], 100)
                     try {
@@ -97,6 +98,7 @@ fun main() = memScoped {
             val text = value.toKString()
             uiFreeText(value)
             uiEntrySetText(ptr.reinterpret(), text)
+            chdir(text)
         }
     }, folder)
     val checkboxes: Checkboxes = mutableListOf()

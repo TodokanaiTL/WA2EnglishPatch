@@ -5,13 +5,13 @@
 #include <windows.h>
 #define WA2EN_LAUNCH_EXE 1
 void start_exe(char const *exe) {
-    STARTUPINFO info = { sizeof(info) };
-    PROCESS_INFORMATION process;
-    if (CreateProcess(exe, L"", NULL, NULL, TRUE,
-            DETACHED_PROCESS, NULL, NULL, &info, &process)) {
-        CloseHandle(process.hProcess);
-        CloseHandle(process.hThread);
-    }
+    LPSTARTUPINFO lpStartupInfo;
+    LPPROCESS_INFORMATION lpProcessInfo;
+    memset(&lpStartupInfo, 0, sizeof lpStartupInfo);
+    memset(&lpProcessInfo, 0, sizeof lpProcessInfo);
+    CreateProcess(exe, NULL, NULL, NULL, NULL,
+            CREATE_DEFAULT_ERROR_MODE | CREATE_NEW_PROCESS_GROUP,
+            NULL, NULL, lpStartupInfo, lpProcessInfo);
 }
 #else
 #define WA2EN_LAUNCH_EXE 0

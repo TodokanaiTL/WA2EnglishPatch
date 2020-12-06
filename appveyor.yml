@@ -9,7 +9,8 @@ cache:
   - '%USERPROFILE%\.konan\dependencies'
 
 install:
-  - bash -c "pacman -Syu --needed --noconfirm"
+  - bash -c "pacman -U --noconfirm https://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
+  - bash -c "pacman -Syu --needed --noconfirm --ignore msys2-runtime,msys2-runtime-devel"
   - bash -c "pacman -S --needed --noconfirm base-devel mingw-w64-x86_64-toolchain"
   - bash -c "pacman -S --needed --noconfirm mingw-w64-x86_64-{nghttp2,zlib}"
 
