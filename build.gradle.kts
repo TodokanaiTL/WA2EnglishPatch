@@ -2,7 +2,7 @@ group = "io.github.todokanaitl"
 version = "1.0.0"
 
 plugins {
-    kotlin("multiplatform") version "1.3.72"
+    kotlin("multiplatform") version "1.4.20"
 }
 
 repositories {
@@ -52,8 +52,8 @@ kotlin {
 
     sourceSets.getByName("nativeMain") {
         dependencies {
-            implementation("com.github.msink:libui:0.1.7")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.7")
+            implementation("com.github.msink:libui:0.1.8")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
         }
     }
 }
@@ -66,14 +66,15 @@ tasks {
 
     register<Exec>("mingwInstallLibcurl") {
         commandLine("bash", "-c", """
-        curl -LSs https://curl.haxx.se/download/curl-7.71.1.tar.gz | tar xzf - &&
-        cd curl-7.71.1 && ./configure CPPFLAGS='-DCURL_STATICLIB -DNGHTTP2_STATICLIB'
+        curl https://curl.haxx.se/download/curl-7.73.0.tar.gz | tar xzf - && cd curl-7.73.0
+        && ./configure CPPFLAGS='-DCURL_STATICLIB -DCARES_STATICLIB -DNGHTTP2_STATICLIB'
         --disable-manual --disable-proxy --disable-file --disable-ftp --disable-cookies
         --disable-smtp --disable-tftp --disable-pop3 --disable-imap --disable-unix-sockets
         --disable-dict --disable-telnet --disable-mqtt --disable-ldap --disable-ldaps
         --disable-rtsp --disable-http-auth --disable-gopher --disable-ipv6 --disable-netrc
-        --disable-smb --enable-static --enable-optimize --without-libidn2 --with-winidn
-        --without-libpsl --without-brotli --without-ssl --with-schannel --with-ca-fallback
+        --disable-smb --disable-shared --enable-static --enable-ipv6 --enable-optimize
+        --enable-ares --enable-esni --without-zstd --without-libpsl --without-libidn2
+        --without-ssl --without-brotli --with-schannel --with-winidn --with-ca-fallback
         --build=x86_64-w64-mingw32 --prefix=/c/msys64/mingw64 && make && make install
         """.trimIndent().replace('\n', ' '))
     }
@@ -104,7 +105,7 @@ tasks {
     }
 
     withType<Wrapper> {
-        gradleVersion = "6.5"
+        gradleVersion = "6.7"
         distributionBase = Wrapper.PathBase.GRADLE_USER_HOME
         distributionType = Wrapper.DistributionType.BIN
         archiveBase = Wrapper.PathBase.GRADLE_USER_HOME

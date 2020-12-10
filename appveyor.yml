@@ -12,7 +12,7 @@ install:
   - bash -c "pacman -U --noconfirm https://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
   - bash -c "pacman -Syu --needed --noconfirm --ignore msys2-runtime,msys2-runtime-devel"
   - bash -c "pacman -S --needed --noconfirm base-devel mingw-w64-x86_64-toolchain"
-  - bash -c "pacman -S --needed --noconfirm mingw-w64-x86_64-{nghttp2,zlib}"
+  - bash -c "pacman -S --needed --noconfirm mingw-w64-x86_64-{c-ares,nghttp2,zlib}"
 
 before_build:
   - ps: >-
@@ -24,10 +24,10 @@ build_script:
   - '.\gradlew --no-daemon mingwInstallLibcurl mingwInstallLibb2 build'
 
 after_build:
-  - 'strip build\bin\native\releaseExecutable\WA2_patch.exe'
+  - 'strip -g build\bin\native\debugExecutable\WA2_patch.exe'
 
 artifacts:
-  - path: 'build\bin\native\releaseExecutable\WA2_patch.exe'
+  - path: 'build\bin\native\debugExecutable\WA2_patch.exe'
     name: WA2_patch
 
 # before_deploy:

@@ -31,11 +31,12 @@ class CURL(
     )
 
     init {
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, true)
         curl_easy_setopt(curl, CURLOPT_URL, urls[name])
         curl_easy_setopt(curl, CURLOPT_XFERINFODATA, bar)
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, true)
         curl_easy_setopt(curl, CURLOPT_USERAGENT, WA2EN_USER_AGENT)
+        curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip, deflate")
+        if (Platform.isDebugBinary) curl_easy_setopt(curl, CURLOPT_VERBOSE, true)
     }
 
     @Throws(Error::class)
