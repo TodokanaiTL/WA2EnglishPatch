@@ -14,8 +14,7 @@ Installer for the English patch of the White Album 2 Visual Novel.
 
 ## Build Requirements
 
-- [Inno Setup 6](http://www.jrsoftware.org/isdl.php)
-- [Inno Download Plugin](https://mitrichsoftware.wordpress.com/inno-setup-tools/inno-download-plugin/)
+- [Inno Setup 6.1](http://www.jrsoftware.org/isdl.php)
 
 ## License
 

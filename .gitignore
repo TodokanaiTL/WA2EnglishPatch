@@ -1,7 +1,3 @@
-*.ini
-*.db
-*.exe
-*.dll
+[Dd]esktop.ini
+Thumbs.db
 out/
-_site/
-Gemfile.lock

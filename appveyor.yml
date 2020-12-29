@@ -10,17 +10,16 @@ init:
       if($env:APPVEYOR_REPO_TAG -eq "true") {
         Update-AppveyorBuild -Version $env:APPVEYOR_REPO_TAG_NAME.Substring(1)
       }
-  - ps: >-
-      Start-FileDownload -FileName "$env:TEMP\idpsetup-1.5.1.exe" `
-        "https://bitbucket.org/mitrich_k/inno-download-plugin/downloads/idpsetup-1.5.1.exe";
 
 install:
   - choco install -y innosetup
-  - '%TEMP%\idpsetup-1.5.1.exe /VERYSILENT /TYPE=compact'
+
+before_build:
+  - curl -Sso "bin\WA2_en.exe" "https://cloud.disroot.org/s/MRQp6cw7DXCY3gr/download"
 
 build_script:
-  - ISCC.exe /I"C:\Program Files (x86)\Inno Download Plugin" src\WA2.iss
-  - ISCC.exe /I"C:\Program Files (x86)\Inno Download Plugin" /DIS_DMM src\WA2.iss
+  - ISCC.exe src\WA2.iss
+  - ISCC.exe /DIS_DMM src\WA2.iss
 
 artifacts:
   - path: out\WA2_patch.exe

@@ -1,8 +1,4 @@
 * text eol=crlf
 
-res/* binary
-bin/* binary
-
-docs/* diff=astextplain
-
-Gemfile linguist-vendored
+res/logo.ico binary
+res/*.rtf diff=astextplain
