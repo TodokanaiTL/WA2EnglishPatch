@@ -1,7 +1,6 @@
 headers = blake2.h
 headerFilter = blake2.h
 linkerOpts = -lb2
-staticLibraries.mingw = libb2.a
 libraryPaths.mingw = C:/msys64/mingw64/lib
 ---
 #include <blake2.h>

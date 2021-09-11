@@ -2,7 +2,7 @@ group = "io.github.todokanaitl"
 version = "1.0.0"
 
 plugins {
-    kotlin("multiplatform") version "1.4.20"
+    kotlin("multiplatform") version "1.5.30"
 }
 
 repositories {
@@ -16,7 +16,27 @@ kotlin {
             binaries.executable {
                 baseName = "WA2_patch"
                 entryPoint = "wa2en.main"
-                linkerOpts("-LC:/msys64/mingw64/lib", "-mwindows")
+                linkerOpts(
+                    "-LC:/msys64/mingw64/lib",
+                    "-mwindows",
+                    "-Wl,-Bstatic",
+                    "-lstdc++",
+                    "-static",
+                    "-lcurl",
+                    "-lidn2",
+                    "-lssh2",
+                    "-lpsl",
+                    "-lbcrypt",
+                    "-lcrypt32",
+                    "-lwldap32",
+                    "-lzstd",
+                    "-lbrotlidec-static",
+                    "-lbrotlicommon-static",
+                    "-lz",
+                    "-lws2_32",
+                    "-lunistring",
+                    "-liconv"
+                )
                 windres(projectDir.resolve("src/nativeMain/resources/wa2en.rc"))
             }
         }
@@ -53,7 +73,7 @@ kotlin {
     sourceSets.getByName("nativeMain") {
         dependencies {
             implementation("com.github.msink:libui:0.1.8")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
         }
     }
 }
@@ -62,21 +82,6 @@ tasks {
     register<Delete>("cleanGenerated") {
         group = "templates"
         getByName("clean").dependsOn(this)
-    }
-
-    register<Exec>("mingwInstallLibcurl") {
-        commandLine("bash", "-c", """
-        curl https://curl.haxx.se/download/curl-7.73.0.tar.gz | tar xzf - && cd curl-7.73.0
-        && ./configure CPPFLAGS='-DCURL_STATICLIB -DCARES_STATICLIB -DNGHTTP2_STATICLIB'
-        --disable-manual --disable-proxy --disable-file --disable-ftp --disable-cookies
-        --disable-smtp --disable-tftp --disable-pop3 --disable-imap --disable-unix-sockets
-        --disable-dict --disable-telnet --disable-mqtt --disable-ldap --disable-ldaps
-        --disable-rtsp --disable-http-auth --disable-gopher --disable-ipv6 --disable-netrc
-        --disable-smb --disable-shared --enable-static --enable-ipv6 --enable-optimize
-        --enable-ares --enable-esni --without-zstd --without-libpsl --without-libidn2
-        --without-ssl --without-brotli --with-schannel --with-winidn --with-ca-fallback
-        --build=x86_64-w64-mingw32 --prefix=/c/msys64/mingw64 && make && make install
-        """.trimIndent().replace('\n', ' '))
     }
 
     register<Exec>("mingwInstallLibb2") {
@@ -105,7 +110,7 @@ tasks {
     }
 
     withType<Wrapper> {
-        gradleVersion = "6.7"
+        gradleVersion = "7.2"
         distributionBase = Wrapper.PathBase.GRADLE_USER_HOME
         distributionType = Wrapper.DistributionType.BIN
         archiveBase = Wrapper.PathBase.GRADLE_USER_HOME

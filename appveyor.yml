@@ -1,7 +1,16 @@
 version: '{branch}-{build}'
 
+image: 'Visual Studio 2019'
+
 environment:
   PATH: 'C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%'
+  DEPS: >-
+    automake1.16
+    autoconf2.13
+    libtool
+    make
+    mingw-w64-x86_64-toolchain
+    mingw-w64-x86_64-curl-winssl
 
 cache:
   - '%USERPROFILE%\.gradle\caches'
@@ -9,10 +18,8 @@ cache:
   - '%USERPROFILE%\.konan\dependencies'
 
 install:
-  - bash -c "pacman -U --noconfirm https://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
-  - bash -c "pacman -Syu --needed --noconfirm --ignore msys2-runtime,msys2-runtime-devel"
-  - bash -c "pacman -S --needed --noconfirm base-devel mingw-w64-x86_64-toolchain"
-  - bash -c "pacman -S --needed --noconfirm mingw-w64-x86_64-{c-ares,nghttp2,zlib}"
+  - bash -c "pacman -Syu --needed --noconfirm"
+  - bash -c "pacman -S --needed --noconfirm $DEPS"
 
 before_build:
   - ps: >-
@@ -21,7 +28,7 @@ before_build:
       }
 
 build_script:
-  - '.\gradlew --no-daemon mingwInstallLibcurl mingwInstallLibb2 build'
+  - '.\gradlew --no-daemon mingwInstallLibb2 build'
 
 after_build:
   - 'strip -g build\bin\native\debugExecutable\WA2_patch.exe'

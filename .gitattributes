@@ -4,3 +4,7 @@ src/templates/wa2en.rc diff
 src/nativeInterop/include/wa2en.h linguist-generated
 src/nativeMain/resources/wa2en.rc diff linguist-generated
 src/nativeMain/resources/wa2en.ico binary
+
+gradlew linguist-vendored
+gradlew.bat linguist-vendored
+gradle/wrapper/* linguist-vendored

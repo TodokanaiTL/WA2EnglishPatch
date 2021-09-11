@@ -26,8 +26,7 @@ class CURL(
             "IC/mv080.pak" to "https://cloud.disroot.org/s/SvvMcAjsTSy9z1H/download",
             "IC/mv090.pak" to "https://cloud.disroot.org/s/b7DlHjPRgro8wyp/download",
             "mv200.pak" to "https://cloud.disroot.org/s/kDDSTHYUEi6wRP2/download",
-            // TODO: move this out of the repo
-            "WA2_en.exe" to "https://raw.githubusercontent.com/TodokanaiTL/WA2EnglishPatch/master/bin/WA2_en.exe"
+            "WA2_en.exe" to "https://cloud.disroot.org/s/MRQp6cw7DXCY3gr/download"
     )
 
     init {
@@ -35,7 +34,7 @@ class CURL(
         curl_easy_setopt(curl, CURLOPT_XFERINFODATA, bar)
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, true)
         curl_easy_setopt(curl, CURLOPT_USERAGENT, WA2EN_USER_AGENT)
-        curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip, deflate")
+        curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "br, gzip, deflate")
         if (Platform.isDebugBinary) curl_easy_setopt(curl, CURLOPT_VERBOSE, true)
     }
 

@@ -138,7 +138,7 @@ fun main() = memScoped {
                         uiControlParent(uiControlParent(ptr.reinterpret()))
                 )!!.reinterpret(), "Error", "Please select the game folder first!")
             }
-            start_exe("$location/WA2_en.exe")
+            start_exe("$location/WA2_en.exe", location)
         }, folder)
     }
     uiWindowOnClosing(window, staticCFunction {
