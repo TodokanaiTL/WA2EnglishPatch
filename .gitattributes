@@ -1,4 +1,7 @@
 * text eol=crlf
 
+res/*.bmp binary
 res/logo.ico binary
 res/*.rtf diff=astextplain
+
+_includes/* linguist-vendored

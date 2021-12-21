@@ -10,11 +10,11 @@ Installer for the English patch of the White Album 2 Visual Novel.
 ## Support
 
 - For installer bugs: create a new [issue](https://github.com/TodokanaiTL/WA2EnglishPatch/issues), if one doesn't exist already.
-- For any other kind of support: visit the [Discord](https://discord.gg/SzxsUz3) server.
+- For any other kind of support: visit the [Discord](https://discord.gg/5rrxEUN) server.
 
 ## Build Requirements
 
-- [Inno Setup 6.1](http://www.jrsoftware.org/isdl.php)
+- [Inno Setup 6.1+](http://www.jrsoftware.org/isdl.php)
 
 ## License
 

@@ -6,8 +6,8 @@ environment:
   PATH: 'C:\Program Files (x86)\Inno Setup 6;%PATH%'
 
 init:
-  - ps: >-
-      if($env:APPVEYOR_REPO_TAG -eq "true") {
+  - ps: |-
+      if ($env:APPVEYOR_REPO_TAG -eq "true") {
         Update-AppveyorBuild -Version $env:APPVEYOR_REPO_TAG_NAME.Substring(1)
       }
 
@@ -15,29 +15,32 @@ install:
   - choco install -y innosetup
 
 before_build:
-  - curl -Sso "bin\WA2_en.exe" "https://cloud.disroot.org/s/MRQp6cw7DXCY3gr/download"
+  - curl -LSso "bin/en.pak" "https://www.dropbox.com/s/dl/rkl4hwij4mshef2/en.pak"
+  - curl -LSso "bin/mv000.pak" "https://cloud.disroot.org/s/GSJAI3ImXkKyhTU/download"
+  - curl -LSso "bin/WA2_en.exe" "https://cloud.disroot.org/s/MRQp6cw7DXCY3gr/download"
 
 build_script:
-  - ISCC.exe src\WA2.iss
-  - ISCC.exe /DIS_DMM src\WA2.iss
+  - ps: ISCC /DVERSION=$($env:APPVEYOR_REPO_TAG_NAME.Substring(1)) src\WA2.iss
 
 artifacts:
   - path: out\WA2_patch.exe
     name: WA2 patch
-  - path: out\WA2_patch_DMM.exe
-    name: WA2 patch (DMM)
 
 before_deploy:
-  - ps: >-
-      if(!$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED) {
+  - ps: |-
+      git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      $msg = (git tag -l --format='%(contents:subject)' $env:APPVEYOR_REPO_TAG_NAME)
+      if ($msg -ne $env:APPVEYOR_REPO_COMMIT_MESSAGE) {
+        $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED = "* $msg"
+      } elseif (!$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED) {
         $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED = "* $env:APPVEYOR_REPO_COMMIT_MESSAGE"
       }
 
 deploy:
   - provider: GitHub
     auth_token:
-      secure: tZicH5QK+eVtmDDtBFAiIfKiTGo2hAhYUjYnANurws9QMQuDiXex05LiexEqGXUV
-    artifact: out\WA2_patch.exe,out\WA2_patch_DMM.exe
+      secure: CZYw5sWK85gAhVnP4ZimstNyYwzpXASOgksyshNFciG5RYZFjURXhLURxwwdqWVA
+    artifact: out\WA2_patch.exe
     description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
     prerelease: true
     on:

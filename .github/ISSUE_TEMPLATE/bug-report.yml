@@ -1,0 +1,34 @@
+name: Bug Report
+labels: [bug]
+description: Only for issues with the installer.
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: >-
+        Provide a more detailed description of the
+        issue and why you consider it to be a bug.
+    validations: {required: true}
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: >-
+        Provide a screenshot, recording,
+        or set of steps to reproduce this bug.
+    validations: {required: true}
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Possible Fix
+      description: >-
+        Can you suggest a fix or reason for the bug?
+    validations: {required: false}
+  - type: textarea
+    id: log
+    attributes:
+      label: Log File
+      description: >-
+        Provide the log file created by the installer in `%TEMP%`.
+    validations: {required: false}
