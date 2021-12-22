@@ -15,9 +15,9 @@ install:
   - choco install -y innosetup
 
 before_build:
-  - curl -LSso "bin/en.pak" "https://www.dropbox.com/s/dl/rkl4hwij4mshef2/en.pak"
-  - curl -LSso "bin/mv000.pak" "https://cloud.disroot.org/s/GSJAI3ImXkKyhTU/download"
-  - curl -LSso "bin/WA2_en.exe" "https://cloud.disroot.org/s/MRQp6cw7DXCY3gr/download"
+  - curl -LSso "bin/en.pak" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AAC_wJaNeZTdBpZiQbJuHC0Xa/en.pak"
+  - curl -LSso "bin/mv000.pak" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AADPYmHbNBviWsb4SbY3PIWSa/mv000.pak"
+  - curl -LSso "bin/WA2_en.exe" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AAAeOzYIpS2iKL11uVLGgoXva/WA2_en.exe"
 
 build_script:
   - ps: ISCC /DVERSION=$($env:APPVEYOR_REPO_TAG_NAME.Substring(1)) src\WA2.iss
@@ -28,11 +28,7 @@ artifacts:
 
 before_deploy:
   - ps: |-
-      git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      $msg = (git tag -l --format='%(contents:subject)' $env:APPVEYOR_REPO_TAG_NAME)
-      if ($msg -ne $env:APPVEYOR_REPO_COMMIT_MESSAGE) {
-        $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED = "* $msg"
-      } elseif (!$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED) {
+      if (!$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED) {
         $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED = "* $env:APPVEYOR_REPO_COMMIT_MESSAGE"
       }
 
