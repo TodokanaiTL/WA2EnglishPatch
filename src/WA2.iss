@@ -1,5 +1,5 @@
 #ifndef VERSION
-#define VERSION     "1.0.0.1"
+#define VERSION     "1.0.0.2"
 #endif
 
 #define BINPATH     SourcePath + "..\bin"
@@ -127,6 +127,10 @@ DefaultDialogFontName = Lucida Sans Unicode
 [Languages]
 ; Setup language
 Name: "English"; MessagesFile: "compiler:Default.isl"
+
+[CustomMessages]
+; Custom messages
+MissingGame=You have to install the original game first!
 
 [InstallDelete]
 ; Delete obsolete files
@@ -295,7 +299,11 @@ end;
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
   Result := True;
-  if CurPageID = wpReady then begin
+  if CurPageID = wpSelectDir then begin
+    Result := FileExists(ExpandConstant('{app}\WA2.exe'))
+    if not Result then
+      MsgBox(ExpandConstant('{cm:MissingGame}'), mbCriticalError, MB_OK);
+  end else if CurPageID = wpReady then begin
     if not WizardIsComponentSelected('subtitles') and
        not WizardIsComponentSelected('videos') and
        not WizardIsComponentSelected('novels') then Exit;
