@@ -16,8 +16,8 @@ install:
 
 before_build:
   - curl -LSso "bin/en.pak" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AAC_wJaNeZTdBpZiQbJuHC0Xa/en.pak"
-  - curl -LSso "bin/mv000.pak" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AADPYmHbNBviWsb4SbY3PIWSa/mv000.pak"
-  - curl -LSso "bin/WA2_en.exe" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AAAeOzYIpS2iKL11uVLGgoXva/WA2_en.exe"
+  - curl -LSso "bin/WA2.exe" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AAAeOzYIpS2iKL11uVLGgoXva/WA2_en.exe"
+  - curl -LSso "bin/mv000.pak" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AACdMQoKt7Siw420_HxsC3PIa/mv000.pak"
 
 build_script:
   - ps: ISCC /DVERSION=$($env:APPVEYOR_REPO_TAG_NAME.Substring(1)) src\WA2.iss
@@ -38,6 +38,6 @@ deploy:
       secure: CZYw5sWK85gAhVnP4ZimstNyYwzpXASOgksyshNFciG5RYZFjURXhLURxwwdqWVA
     artifact: out\WA2_patch.exe
     description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
-    prerelease: true
+    prerelease: false
     on:
       APPVEYOR_REPO_TAG: true

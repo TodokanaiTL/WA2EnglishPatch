@@ -1,5 +1,5 @@
 #ifndef VERSION
-#define VERSION     "1.0.0.2"
+#define VERSION     "1.0.1.0"
 #endif
 
 #define BINPATH     SourcePath + "..\bin"
@@ -7,8 +7,8 @@
 #define POSTINS     "postinstall skipifsilent"
 #define WA2REGK     "Software\Leaf\WHITE ALBUM2"
 
-#define NAME_NVL01  "The Idol Who Forgot How to Sing"
-#define NAME_NVL02  "The Snow Melts and Until It Falls Again"
+#define NAME_NVL01  "The Snow Melts and Until It Falls Again"
+#define NAME_NVL02  "The Idol Who Forgot How to Sing"
 
 #define LINK_DBDIR  "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/"
 
@@ -29,8 +29,8 @@
 #define LINK_D3DX9  LINK_DBDIR + "AABIk3xLHB99nZSX0zU16v0ca/d3d9.dll"
 #define LINK_STTXT  LINK_DBDIR + "AABTRnmvgxd8DhhqZ0YqgESaa/todokanai/subtitles"
 #define LINK_STFNT  LINK_DBDIR + "AACY140kfAGiWEMEbD0KL3jva/todokanai/font.png"
-#define LINK_NVL01  LINK_DBDIR + "AABtCeHVHzX6vCF6sXzGv5lna/novels/" + NAME_NVL01 + ".pdf"
-#define LINK_NVL02  LINK_DBDIR + "AABcDktd1OXLLQ3hHbQz-nRLa/novels/" + NAME_NVL02 + ".pdf"
+#define LINK_NVL01  LINK_DBDIR + "AABcDktd1OXLLQ3hHbQz-nRLa/novels/" + NAME_NVL01 + ".pdf"
+#define LINK_NVL02  LINK_DBDIR + "AABtCeHVHzX6vCF6sXzGv5lna/novels/" + NAME_NVL02 + ".pdf"
 
 #define HASH_MV010  "ec47f6a5eaed9bf5ca497c6196d64fdeab89c2a211399f99ab5409fd3afcb7e8"
 #define HASH_MV020  "4d28aa1d60f4fd893dbf8a35be6f7571c9682949a56ce3a2c7c521edc4ee7097"
@@ -49,8 +49,8 @@
 #define HASH_D3DX9  "49c098a07cc8fea6be6aea7d1dfd973e83d9b434144b1584591e99e189178b0f"
 #define HASH_STTXT  "0cc1babc7cb03b82074b1e891886bb6f888f1a12972a2b462847dba0df245eaf"
 #define HASH_STFNT  "002b00fae25a6b564e86117e5c2e0ebb21b811ca697c648561aaa86e1a239a92"
-#define HASH_NVL01  "500b1fc9ea84ec13671783a3a7179699509c2ed85243241a28b55b676083e5b8"
-#define HASH_NVL02  "1e5ccb135827b2afa359fd1d8346823412e1a20607213a3325c3b27a844ce38e"
+#define HASH_NVL01  "1e5ccb135827b2afa359fd1d8346823412e1a20607213a3325c3b27a844ce38e"
+#define HASH_NVL02  "500b1fc9ea84ec13671783a3a7179699509c2ed85243241a28b55b676083e5b8"
 
 #define SIZE_MV010  "012320991"
 #define SIZE_MV020  "087833729"
@@ -69,8 +69,8 @@
 #define SIZE_D3DX9  "000243712"
 #define SIZE_STTXT  "000025675"
 #define SIZE_STFNT  "000065497"
-#define SIZE_NVL01  "001085084"
-#define SIZE_NVL02  "001253262"
+#define SIZE_NVL01  "001253262"
+#define SIZE_NVL02  "001085084"
 
 [Setup]
 ; App info
@@ -136,6 +136,7 @@ MissingGame=You have to install the original game first!
 ; Delete obsolete files
 Type: files;          Name: "{app}\ev000.pak"
 Type: files;          Name: "{app}\ev150.pak"
+Type: files;          Name: "{app}\WA2_en.exe"
 Type: filesandordirs; Name: "{userdocs}\White Album 2 Patch Logs"
 
 [Types]
@@ -178,8 +179,8 @@ Name: menuicon;    Description: "Create a &start menu shortcut"; Flags: unchecke
 
 [Icons]
 ; Shortcuts
-Name: "{commondesktop}\White Album 2";  Filename: "{app}\WA2_en.exe"; Tasks: desktopicon
-Name: "{commonprograms}\White Album 2"; Filename: "{app}\WA2_en.exe"; Tasks: menuicon
+Name: "{commondesktop}\White Album 2";  Filename: "{app}\WA2.exe"; Tasks: desktopicon
+Name: "{commonprograms}\White Album 2"; Filename: "{app}\WA2.exe"; Tasks: menuicon
 
 [INI]
 ; Edit SYSTEM.ini
@@ -218,15 +219,19 @@ Root: HKA; Subkey: "{#WA2REGK}\WA2EN"; ValueName: "mv230.pak"; ValueType: dword;
 
 [Run]
 ; Postinstall options
-Filename: "{app}\WA2_en.exe"; Description: "Launch game";        Flags: {#POSTINS} nowait
+Filename: "{app}\WA2.exe";    Description: "Launch game";        Flags: {#POSTINS} nowait
 Filename: "{app}\novels";     Description: "Open novels folder"; Flags: {#POSTINS} unchecked shellexec; Components: novels
 Filename: "{log}";            Description: "Open log file";      Flags: {#POSTINS} unchecked shellexec
 
 [Files]
+; Rename originals
+Source: "{app}\WA2.exe";           DestDir: "{app}";           DestName: WA2.exe.BKP;    Flags: external onlyifdoesntexist
+Source: "{app}\mv000.pak";         DestDir: "{app}";           DestName: mv000.pak.BKP;  Flags: external onlyifdoesntexist
+
 ; Patch files
 Source: "{#BINPATH}\en.pak";       DestDir: "{app}";           Components: patch;        Flags: setntfscompression
-Source: "{#BINPATH}\mv000.pak";    DestDir: "{app}";           Components: patch;        Flags: onlyifdoesntexist
-Source: "{#BINPATH}\WA2_en.exe";   DestDir: "{app}";           Components: patch;        Flags: replacesameversion
+Source: "{#BINPATH}\WA2.exe";      DestDir: "{app}";           Components: patch;        Flags: onlyifdestfileexists
+Source: "{#BINPATH}\mv000.pak";    DestDir: "{app}";           Components: patch;        Flags: onlyifdestfileexists
 
 ; Subtitles
 Source: "{tmp}\d3d9.dll";          DestDir: "{app}";           Components: subtitles;    Flags: {#EXTERNL}; ExternalSize: {#SIZE_D3DX9}

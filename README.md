@@ -15,6 +15,10 @@ Installer for the English patch of the White Album 2 Visual Novel.
 ## Build Requirements
 
 - [Inno Setup 6.1+](http://www.jrsoftware.org/isdl.php)
+- English patch
+  - `en.pak`
+  - `WA2.exe`
+  - `mv000.pak`
 
 ## License
 
