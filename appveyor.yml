@@ -38,6 +38,7 @@ deploy:
       secure: CZYw5sWK85gAhVnP4ZimstNyYwzpXASOgksyshNFciG5RYZFjURXhLURxwwdqWVA
     artifact: out\WA2_patch.exe
     description: $(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)
+    force_update: true
     prerelease: false
     on:
       APPVEYOR_REPO_TAG: true
