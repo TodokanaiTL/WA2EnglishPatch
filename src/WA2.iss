@@ -1,5 +1,5 @@
 #ifndef VERSION
-#define VERSION     "1.0.1.1"
+#define VERSION     "1.0.2.0"
 #endif
 
 #define BINPATH     SourcePath + "..\bin"
