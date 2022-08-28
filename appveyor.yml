@@ -15,9 +15,9 @@ install:
   - choco install -y innosetup
 
 before_build:
-  - curl -LSso "bin/en.pak" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AAC_wJaNeZTdBpZiQbJuHC0Xa/en.pak"
-  - curl -LSso "bin/WA2.exe" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AAAM9Im-IbLyMo4eMfn1EqZka/WA2.exe"
-  - curl -LSso "bin/mv000.pak" "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/AACdMQoKt7Siw420_HxsC3PIa/mv000.pak"
+  - curl -LSso "bin/en.pak" "https://link.storjshare.io/jwcjitwklfiiso3blqpg4myjoibq/wa2/en.pak?download"
+  - curl -LSso "bin/WA2.exe" "https://link.storjshare.io/jufxx5vtkrcsjp7t55m342gji5qq/wa2/WA2.exe?download"
+  - curl -LSso "bin/mv000.pak" "https://link.storjshare.io/s/jw6fst3gpmagzqzbgiuwuhervqlq/wa2/mv000.pak?download"
 
 build_script:
   - ps: ISCC /DVERSION=$($env:APPVEYOR_REPO_TAG_NAME.Substring(1)) src\WA2.iss

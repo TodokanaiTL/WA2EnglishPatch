@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+
 name: Bug Report
 labels: [bug]
 description: Only for issues with the installer.

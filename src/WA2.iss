@@ -1,5 +1,5 @@
 #ifndef VERSION
-#define VERSION     "1.0.2.0"
+#define VERSION     "1.0.3.0"
 #endif
 
 #define BINPATH     SourcePath + "..\bin"
@@ -10,28 +10,30 @@
 #define NAME_NVL01  "The Snow Melts and Until It Falls Again"
 #define NAME_NVL02  "The Idol Who Forgot How to Sing"
 
-#define LINK_DBDIR  "https://www.dropbox.com/sh/dl/8qd82pfpwulshf2/"
+#define STORJ_DDL(str id, str name)  \
+    "https://link.storjshare.io/s/" + id + "/wa2/" + name + "?download"
 
-#define LINK_MV010  LINK_DBDIR + "AAAjOLfBvYDKLLGCwVUCIhlTa/IC/mv010.pak"
-#define LINK_MV020  LINK_DBDIR + "AADAtOH7bQ04cuzUukMPb5NNa/IC/mv020.pak"
-#define LINK_MV070  LINK_DBDIR + "AAC09nphr1eTP4bqZ5pCAvIba/IC/MV070.pak"
-#define LINK_MV080  LINK_DBDIR + "AAA0RzxYhja8Kqfwa81kK-uCa/IC/MV080.pak"
-#define LINK_MV090  LINK_DBDIR + "AAAifcTqEYzAUFhTGzwjgC8Oa/IC/MV090.pak"
-#define LINK_MV100  LINK_DBDIR + "AACoPWuUD0Pb2FZJ91_EjZ-4a/mv100.pak"
-#define LINK_MV110  LINK_DBDIR + "AACPcKicczBVfNHp-zAfOyVNa/mv110.pak"
-#define LINK_MV120  LINK_DBDIR + "AAClYg50VXrdfV9jD4kmq9ZEa/mv120.pak"
-#define LINK_MV130  LINK_DBDIR + "AACJ74eVakUzWqaSXhLThOI3a/mv130.pak"
-#define LINK_MV140  LINK_DBDIR + "AABK6v6WK-vALip3A037PK7ba/mv140.pak"
-#define LINK_MV200  LINK_DBDIR + "AACVlWUV0Cj2nH-DPhv-hCuHa/mv200.pak"
-#define LINK_MV210  LINK_DBDIR + "AACwjDSZQLeEqxL8XrSoYnAPa/mv210.pak"
-#define LINK_MV220  LINK_DBDIR + "AAAMe6RtxqTUjtwhyiXbachga/mv220.pak"
-#define LINK_MV230  LINK_DBDIR + "AAB7bgpjXB40YyLyySkCSVDUa/mv230.pak"
-#define LINK_MV240  LINK_DBDIR + "AAAJwvB57U7nMc_b1YrwkHv1a/mv240.pak"
-#define LINK_D3DX9  LINK_DBDIR + "AABIk3xLHB99nZSX0zU16v0ca/d3d9.dll"
-#define LINK_STTXT  LINK_DBDIR + "AABTRnmvgxd8DhhqZ0YqgESaa/todokanai/subtitles"
-#define LINK_STFNT  LINK_DBDIR + "AACY140kfAGiWEMEbD0KL3jva/todokanai/font.png"
-#define LINK_NVL01  LINK_DBDIR + "AABcDktd1OXLLQ3hHbQz-nRLa/novels/" + NAME_NVL01 + ".pdf"
-#define LINK_NVL02  LINK_DBDIR + "AABtCeHVHzX6vCF6sXzGv5lna/novels/" + NAME_NVL02 + ".pdf"
+#define LINK_MV010  STORJ_DDL("jxr7fwo6woldze2kqmd7chqpzn3q", "IC/mv010.pak")
+#define LINK_MV020  STORJ_DDL("juhelldttg22pfzbs4rpifncmboa", "IC/mv020.pak")
+#define LINK_MV070  STORJ_DDL("jvo7rwtjk7kmbjbh3dgg2ryse3ga", "IC/mv070.pak")
+#define LINK_MV080  STORJ_DDL("jxqwoyh2jtclvfhnwxrbwzxrwd5q", "IC/mv080.pak")
+#define LINK_MV090  STORJ_DDL("jwyavmksnxqjnng24krrij2b2xpa", "IC/mv090.pak")
+#define LINK_MV100  STORJ_DDL("jwopg7t73zwnjy7tacji7ey7abea", "mv100.pak")
+#define LINK_MV110  STORJ_DDL("jv35b6dmsfid6xlil462tlbzgn6q", "mv110.pak")
+#define LINK_MV120  STORJ_DDL("jud7xgogpkopfae47hb6bmo6oppq", "mv120.pak")
+#define LINK_MV130  STORJ_DDL("jwupfjoj74kfqliokeahduy4rljq", "mv130.pak")
+#define LINK_MV140  STORJ_DDL("jw7eq4uyak53jlw4turqrjvvmipq", "mv140.pak")
+#define LINK_MV200  STORJ_DDL("jxal7adnn6irrkgeq5mzsykjdrpa", "mv200.pak")
+#define LINK_MV210  STORJ_DDL("jvxqawllvsqbxg6llcjwv5ijjvva", "mv210.pak")
+#define LINK_MV220  STORJ_DDL("jvxtugdfpls6vnxle66vgqfwnzoa", "mv220.pak")
+#define LINK_MV230  STORJ_DDL("jxppxkby37wcxiuhvtjx3q26az2q", "mv230.pak")
+#define LINK_MV240  STORJ_DDL("jx2wpm3cdhaqbkv7ld5zcwh4y2na", "mv240.pak")
+#define LINK_D3D9O  STORJ_DDL("jxckpe3fge25e7saetkdloqecitq", "d3d9.dll.old")
+#define LINK_D3D9N  STORJ_DDL("jxtudisskdlct52qtsrvbimfvkdq", "d3d9.dll")
+#define LINK_STTXT  STORJ_DDL("ju7jkdv6kadxqbdcilgxf6scaroq", "todokanai/subtitles")
+#define LINK_STFNT  STORJ_DDL("jwunncmwuh2wophbvjpgn6osw23q", "todokanai/font.png")
+#define LINK_NVL01  STORJ_DDL("jvkvsu3yz3y6flgemufmyoiv6odq", "novels/" + NAME_NVL01 + ".pdf")
+#define LINK_NVL02  STORJ_DDL("jxpom7l3sxorwtu2bxacavhhtuwa", "novels/" + NAME_NVL02 + ".pdf")
 
 #define HASH_MV010  "a8da9a137751e8f0b4b7288e652ea4dea3eea234cb60fd14f86da99755f6a95e"
 #define HASH_MV020  "623c8cd891def54e1e56ea398a3840f674413a65f8d67d6b0deb3dd5c8f0dda2"
@@ -48,8 +50,9 @@
 #define HASH_MV220  "a23dacbe57bb2c869fa525ef5e645c49af4e8cc40a4fe003282de9933293b73f"
 #define HASH_MV230  "ef571c4c0dc245831815b1aca55ea780300535901516622825da0e0ca2d297d1"
 #define HASH_MV240  "bc4865bf16d316acda48334d4317f2fbc797b3f7119842f18a7bf07b960c2551"
-#define HASH_D3DX9  "49c098a07cc8fea6be6aea7d1dfd973e83d9b434144b1584591e99e189178b0f"
-#define HASH_STTXT  "0cc1babc7cb03b82074b1e891886bb6f888f1a12972a2b462847dba0df245eaf"
+#define HASH_D3D9O  "49c098a07cc8fea6be6aea7d1dfd973e83d9b434144b1584591e99e189178b0f"
+#define HASH_D3D9N  "cdc8070a3bd64216b37c920a4306735f3da9a68d707bf42f6267dc4def3dbb01"
+#define HASH_STTXT  "44b40b444bdd45c943f795cd2c8fdbc59bb35696cac7c79a7bb3e2e6f70220e9"
 #define HASH_STFNT  "002b00fae25a6b564e86117e5c2e0ebb21b811ca697c648561aaa86e1a239a92"
 #define HASH_NVL01  "1e5ccb135827b2afa359fd1d8346823412e1a20607213a3325c3b27a844ce38e"
 #define HASH_NVL02  "500b1fc9ea84ec13671783a3a7179699509c2ed85243241a28b55b676083e5b8"
@@ -69,8 +72,9 @@
 #define SIZE_MV220  "298456456"
 #define SIZE_MV230  "198469312"
 #define SIZE_MV240  "073624895"
-#define SIZE_D3DX9  "000243712"
-#define SIZE_STTXT  "000025675"
+#define SIZE_D3D9O  "000243712"
+#define SIZE_D3D9N  "000263168"
+#define SIZE_STTXT  "000025691"
 #define SIZE_STFNT  "000065497"
 #define SIZE_NVL01  "001253262"
 #define SIZE_NVL02  "001085084"
@@ -134,13 +138,6 @@ Name: "English"; MessagesFile: "compiler:Default.isl"
 [CustomMessages]
 ; Custom messages
 MissingGame=You have to install the original game first!
-
-[InstallDelete]
-; Delete obsolete files
-Type: files;          Name: "{app}\ev000.pak"
-Type: files;          Name: "{app}\ev150.pak"
-Type: files;          Name: "{app}\WA2_en.exe"
-Type: filesandordirs; Name: "{userdocs}\White Album 2 Patch Logs"
 
 [Types]
 ; Installation types
@@ -207,7 +204,7 @@ Source: "{#BINPATH}\WA2.exe";      DestDir: "{app}";           Components: patch
 Source: "{#BINPATH}\mv000.pak";    DestDir: "{app}";           Components: patch;        Flags: overwritereadonly
 
 ; Subtitles
-Source: "{tmp}\d3d9.dll";          DestDir: "{app}";           Components: subtitles;    Flags: {#EXTERNL}; ExternalSize: {#SIZE_D3DX9}
+Source: "{tmp}\d3d9.dll";          DestDir: "{app}";           Components: subtitles;    Flags: {#EXTERNL}; ExternalSize: {#SIZE_D3D9N}
 Source: "{tmp}\font.png";          DestDir: "{app}\todokanai"; Components: subtitles;    Flags: {#EXTERNL}; ExternalSize: {#SIZE_STFNT}
 Source: "{tmp}\subtitles";         DestDir: "{app}\todokanai"; Components: subtitles;    Flags: {#EXTERNL}; ExternalSize: {#SIZE_STTXT}
 
@@ -256,6 +253,8 @@ begin
     Result := RenameFile(path, path + '.BKP');
     if Result then Log('Created backup for '  + name + '.')
     else Log('Failed to create backup for ' + name + '.');
+  end else begin
+    Result := not FileExists(path);
   end;
 end;
 
@@ -285,7 +284,11 @@ begin
     DLPage.Clear;
 
     if WizardIsComponentSelected('subtitles') then begin
-      DLPage.Add('{#LINK_D3DX9}', 'd3d9.dll', '{#HASH_D3DX9}');
+      if RegKeyExists(HKCU, 'Software\Wine') then begin
+        DLPage.Add('{#LINK_D3D9O}', 'd3d9.dll', '{#HASH_D3D9O}');
+      end else begin
+        DLPage.Add('{#LINK_D3D9N}', 'd3d9.dll', '{#HASH_D3D9N}');
+      end;
       DLPage.Add('{#LINK_STFNT}', 'font.png', '{#HASH_STFNT}');
       DLPage.Add('{#LINK_STTXT}', 'subtitles', '{#HASH_STTXT}');
     end else begin
